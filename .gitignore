@@ -1,0 +1,9 @@
+*.suo
+*.resx
+*.dll
+*.user
+*/bin/
+*/obj/
+Database/ManualMF.mdf
+Database/ManualMF_log.ldf
+Deploy/

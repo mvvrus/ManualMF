@@ -4,51 +4,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityServer.Web.Authentication.External;
+using System.Security.Claims;
 
-namespace ManualMFAdapter
+namespace ManualMF
 {
     public class ManualMFAdapter: IAuthenticationAdapter
     {
         public IAdapterPresentation BeginAuthentication(System.Security.Claims.Claim identityClaim, System.Net.HttpListenerRequest request, IAuthenticationContext context)
         {
-            //TODO
-            throw new NotImplementedException();
+            //TODO Perform required initialization
+            return new ManualMFPresentation();
         }
 
         public bool IsAvailableForUser(System.Security.Claims.Claim identityClaim, IAuthenticationContext context)
         {
-            //TODO
-            throw new NotImplementedException();
+            //Currently, all users are allowed for authentication
+            return true;
+            //TODO Decide wether to implement user segregation
         }
 
         public IAuthenticationAdapterMetadata Metadata
         {
-            //TODO
-            get { throw new NotImplementedException(); }
+            get { return new ManualMFMetadata(); }
         }
 
         public void OnAuthenticationPipelineLoad(IAuthenticationMethodConfigData configData)
         {
-            //TODO
-            throw new NotImplementedException();
+            //Currently, we have nothing to do here
+            //TODO Perform required adapter initialization 
         }
 
         public void OnAuthenticationPipelineUnload()
         {
-            //TODO
-            throw new NotImplementedException();
+            //Currently, we have nothing to do here
+            //TODO Perform required adapter resources de-allocation
         }
 
         public IAdapterPresentation OnError(System.Net.HttpListenerRequest request, ExternalAuthenticationException ex)
         {
-            //TODO
-            throw new NotImplementedException();
+            //Just retry with the same form for now
+            return new ManualMFPresentation();
         }
 
-        public IAdapterPresentation TryEndAuthentication(IAuthenticationContext context, IProofData proofData, System.Net.HttpListenerRequest request, out System.Security.Claims.Claim[] claims)
+        public IAdapterPresentation TryEndAuthentication(IAuthenticationContext context, IProofData proofData, System.Net.HttpListenerRequest request, out Claim[] claims)
         {
-            //TODO
-            throw new NotImplementedException();
+            //Just for now - simply allow all
+            claims = new[] { new Claim("https://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationmethod", "urn:ManualMF:operatorassistedauthentication") };
+            return null;
+            //TODO Really perform authentication
         }
     }
 }
