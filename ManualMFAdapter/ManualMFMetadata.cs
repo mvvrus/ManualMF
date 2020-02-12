@@ -11,6 +11,7 @@ namespace ManualMF
 {
     class ManualMFMetadata : IAuthenticationAdapterMetadata
     {
+        public const String AUTH_METHOD = "urn:manualmf:operatorassistedauth";
         public string AdminName
         {
             get { return "Operator-assisted MFA adapter"; }
@@ -18,7 +19,7 @@ namespace ManualMF
 
         public string[] AuthenticationMethods
         {
-            get { return new[] { "urn:ManualMF:operatorassistedauthentication" }; }
+            get { return new[] { AUTH_METHOD }; }
         }
 
         public int[] AvailableLcids

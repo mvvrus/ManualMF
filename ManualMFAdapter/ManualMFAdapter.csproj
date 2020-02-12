@@ -51,6 +51,7 @@
     <Compile Include="ManualMFAdapter.cs" />
     <Compile Include="ManualMFMetadata.cs" />
     <Compile Include="ManualMFPresentation.cs" />
+    <Compile Include="ManualMFUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
