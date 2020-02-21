@@ -49,10 +49,13 @@ namespace ManualMF
 
         public IAdapterPresentation TryEndAuthentication(IAuthenticationContext context, IProofData proofData, System.Net.HttpListenerRequest request, out Claim[] claims)
         {
-            //Just for now - simply allow all
-            claims = new[] { new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationmethod", ManualMFMetadata.AUTH_METHOD) };
+            claims = null;
+            if (proofData.Properties.ContainsKey(ManualMFPresentation.AUTHBUTTON)) {
+                claims = new[] { new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationmethod", ManualMFMetadata.AUTH_METHOD) };
+                return null;
+            }
+            else return new ManualMFPresentation(ManualMFPresentation.FormMode.AutoLogout);
 
-            return null;
             //TODO Really perform authentication
         }
     }

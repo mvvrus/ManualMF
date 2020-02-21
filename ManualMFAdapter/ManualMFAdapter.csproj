@@ -48,6 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Common\AccessDefs.cs">
+      <Link>AccessDefs.cs</Link>
+    </Compile>
+    <Compile Include="AccessValidator.cs" />
     <Compile Include="ManualMFAdapter.cs" />
     <Compile Include="ManualMFMetadata.cs" />
     <Compile Include="ManualMFPresentation.cs" />
