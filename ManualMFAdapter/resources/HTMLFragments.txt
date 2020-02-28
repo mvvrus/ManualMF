@@ -1,0 +1,6 @@
+#Hidden controls required to be present in the the authorization form fragment
+REQUIRED_HIDDEN = <input id="authMethod" type="hidden" name="AuthMethod" value="%AuthMethod%"> <input id="context" type="hidden" name="Context" value="%Context%">
+CancelButton = cancelButton
+
+#
+NormalForm = <form method="post" id="authForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Check" value="[#CheckButtonText]"><input id="cancelButton" type="submit" name="[!CancelButton]" value="[#CancelButtonText]"></form>

@@ -1,0 +1,4 @@
+#Text for CheckButton in NormalForm
+CheckButtonText = Проверить
+#Text for CancelButton 
+CancelButtonText = Отмена

@@ -52,6 +52,9 @@
       <Link>AccessDefs.cs</Link>
     </Compile>
     <Compile Include="AccessValidator.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ConnManager.cs" />
+    <Compile Include="HtmlFragmentSupplier.cs" />
     <Compile Include="ManualMFAdapter.cs" />
     <Compile Include="ManualMFMetadata.cs" />
     <Compile Include="ManualMFPresentation.cs" />
@@ -61,7 +64,15 @@
   <ItemGroup>
     <None Include="mvvrus.snk" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HTMLFragments.resx" />
+    <EmbeddedResource Include="LocalizedStrings.resx" />
+    <EmbeddedResource Include="LocalizedStrings.ru.resx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

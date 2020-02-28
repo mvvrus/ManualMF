@@ -1,0 +1,4 @@
+#Text for CheckButton in NormalForm
+CheckButtonText = Check
+#Text for CancelButton 
+CancelButtonText = Cancel
