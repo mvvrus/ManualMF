@@ -183,5 +183,25 @@ namespace ManualMF
             return result;
         }
 
+        //Cancel pending request from the same IP. Return true if successful, false otherwise
+        public Boolean Cancel(String Upn, IPAddress AccessedFrom)
+        {
+            Boolean result;
+            using (SqlCommand cmd = new SqlCommand("DELETE FROM dbo.PERMISSIONS WHERE UPN=@UPN AND REQUEST_STATE=0 AND FROM_IP=@FROM_IP",m_Connection) ){
+                cmd.Parameters.Add("@UPN", SqlDbType.NVarChar).Value = Upn;
+                SqlParameter p_from_ip = cmd.Parameters.Add("@FROM_IP", SqlDbType.Binary);
+                p_from_ip.IsNullable = true;
+                if (AccessedFrom != null)
+                {
+                    byte[] from_ip_bytes = AccessedFrom.GetAddressBytes();
+                    p_from_ip.Size = from_ip_bytes.Length;
+                    p_from_ip.Value = from_ip_bytes;
+                }
+                else p_from_ip.Value = DBNull.Value;
+                result=cmd.ExecuteNonQuery()>0;
+            }
+            return result;
+        }
+
     }
 }

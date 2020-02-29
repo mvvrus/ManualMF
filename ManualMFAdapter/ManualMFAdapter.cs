@@ -116,17 +116,30 @@ namespace ManualMF
                     break; 
                 case AuthState.AlreadyDenied: //Authentication was denied already
                 default: //Authentication was pending last time
+                    ConnManager connmgr = (ConnManager)Context.Data[CONNMGR];
+                    //Get required infomation to check/cancel database record
+                    IPAddress access_from = ExtractOriginalIP(Request);
+                    String upn = (String)Context.Data[UPN];
+                    if (ProofData.Properties.ContainsKey(HtmlFragmentSupplier.CancelButtonName))
+                    {
+                        //Cancel request: clear request record wich was cancelled while pending
+                        try
+                        {
+                            SqlConnection conn = connmgr.Acquire();
+                            using (AccessValidator validator = new AccessValidator(conn)) validator.Cancel(upn, access_from);
+                        }
+                        finally
+                        {
+                            connmgr.Release();
+                        }
+                    }
                     //Check for cancel request too along with already denied condition
-                    if (AuthState.AlreadyDenied==auth_state || ProofData.Properties.ContainsKey(HtmlFragmentSupplier.CancelButtonName)) //Left temporary cancel check implementation for a while
+                    if (AuthState.AlreadyDenied == auth_state || ProofData.Properties.ContainsKey(HtmlFragmentSupplier.CancelButtonName)) //Left temporary cancel check implementation for a while
                     {   //If so, leave the authrntication pipeline 
                         ClearContext(Context); //Dispose all context objects
                         return new ManualMFPresentation(FormMode.FinalClose); //show them the form, from which they never return to the pipeline
                     }
                     //If we are here we must check authentication in the database
-                    //Get required infomation to check database record
-                    IPAddress access_from = ExtractOriginalIP(Request);
-                    String upn = (String)Context.Data[UPN];
-                    ConnManager connmgr = (ConnManager)Context.Data[CONNMGR];
                     //Check current permission state in the database
                     try
                     {
