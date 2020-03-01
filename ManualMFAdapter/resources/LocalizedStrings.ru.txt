@@ -1,4 +1,29 @@
-#Text for CheckButton in NormalForm
+﻿#Text for CheckButton in NormalForm
 CheckButtonText = Проверить
 #Text for CancelButton 
 CancelButtonText = Отмена
+#Text in NormalForm main part
+NormalFormDescriptionText = Для предоставления доступа свяжитесь с оператором и попросите продтвердить ваш запрос.
+#Text in RetryForm main part
+WaitMoreFormDescriptionText = Your request is waiting for an operator's decision
+#Text for NormalForm/WaitMoreForm describing Check button
+CheckAboutText = Нажмите кнопку "Проверить" чтобы проверить, подтвержден ли ваш запрос.
+#Text for NormalForm/WaitMoreForm describing Cancel button
+CancelAboutText = Нажмите кнопку "Отмена", чтобы отменить запрос.
+
+#Text in AlreadyAuthForm main part
+AlreadyAuthFormDescriptionText = Доступ уже был подтвержден ранее.
+#Text describing Continue button
+ContinueAboutText = Нажмите кнопку "Продолжить" для продолжения.
+#Text for ContinueButton 
+ContinueButtonText = Продолжить  
+
+#Text in DeniedForm first paragraph
+DeniedFormStartText = Доступ запрещен. 
+#Text in DeniedForm third paragraph
+DeniedFormRepeatText = Для повторного запроса доступа введите адрес, куда вам необходим доступ, в адресной строке браузера и заново пройдите проверку учетных данных.
+#Text Describing Continue button in DeniedForm
+ContinueToCloseAboutText = Нажмите кнопку Продолжить для закрытия этой вкладки или окна.
+
+
+

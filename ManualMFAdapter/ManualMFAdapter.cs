@@ -161,7 +161,7 @@ namespace ManualMF
             switch (acc_state)
             {
                 case AccessState.Pending: //Tell them that they should wait more
-                    return new ManualMFPresentation();
+                    return new ManualMFPresentation(FormMode.WaitMoreForm);
                 case AccessState.Denied: //Found that authentication was denied
                     Context.Data[STATE] = AuthState.AlreadyDenied; //Set authentication state to get out of the pipeline next time we return to this method
                     return new ManualMFPresentation(deny_reason); //Notify user that his access was denied and why

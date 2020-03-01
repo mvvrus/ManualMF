@@ -2,3 +2,28 @@
 CheckButtonText = Check
 #Text for CancelButton 
 CancelButtonText = Cancel
+#Text in NormalForm main part
+NormalFormDescriptionText = Call an operator and ask him/her to approve your access request
+#Text in WaitMoreForm main part
+WaitMoreFormDescriptionText = Your request is waiting for an operator's decision
+#Text for NormalForm/WaitMoreForm describing Check button
+CheckAboutText = Click "Check" button to check approvement of your request
+#Text for NormalForm/WaitMoreForm describing Cancel button
+CancelAboutText = Click "Cancel" button to terminate your request
+
+#Text in AlreadyAuthForm main part
+AlreadyAuthFormDescriptionText = You access has been granted already
+#Text describing Continue button
+ContinueAboutText = Click "Continue" to proceed
+#Text for ContinueButton 
+ContinueButtonText = Continue  
+
+#Text in DeniedForm first paragraph
+DeniedFormStartText = Access denied.
+#Text in DeniedForm third paragraph
+DeniedFormRepeatText =
+#Text Describing Continue button in DeniedForm
+ContinueToCloseAboutText =
+
+
+

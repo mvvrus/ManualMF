@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace ManualMF
 {
-    public enum FormMode { NormalForm, AlreadyAuthForm, DeniedForm, ErrorForm, FinalClose };
+    public enum FormMode { NormalForm, WaitMoreForm, AlreadyAuthForm, DeniedForm, ErrorForm, FinalClose };
 
     //This class is used as a source of localized HTML fragments, returned by ManualMFPresentation instances
     //For each locale a single instance of this class is created
@@ -75,7 +75,6 @@ namespace ManualMF
 
         static void SubstituteVars(StringBuilder Template, String LeftDelimiter, String RightDelimiter,NameValueCollection VarSource)
         {
-            //TODO
             int ndx; //Position of left delimiter found
             int pos = 0; //Position from which start search
             do
@@ -105,27 +104,34 @@ namespace ManualMF
         }
 
         //Create HTML fragment to return
-        public String GetFragment(FormMode Mode, AccessDeniedReason Reason, String ErrorMessage)
+        String GetFragment(FormMode Mode, AccessDeniedReason Reason, String ErrorMessage)
         {
             String fragment_name = Enum.GetName(typeof(FormMode), Mode); //Get resource string name for the fragment template
             String html_template = s_Fragments[fragment_name]; //Extract fragment template from resources
+            if (null == html_template) return null;
+            String deny_reason = m_LocalizedStrings[Enum.GetName(typeof(AccessDeniedReason), Reason)];
             StringBuilder html_under_construction = new StringBuilder(html_template,4*html_template.Length);
             SubstituteVars(html_under_construction, "[!","]", s_Fragments); //Subtitute culture-invariant vars in the fragemnt, if any exists
             SubstituteVars(html_under_construction, "[#", "]", m_LocalizedStrings); //Subtitute localized strings in the fragemnt, if any exists
             String result = html_under_construction.ToString();
+            //Show reason why the access is denied (if field for it is defined in the template)
+            result = new Regex("#DenyReason#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, deny_reason);
             //Insert ErrorMessage if any
             if (ErrorMessage != null)
                 result=new Regex("#ErrorMessage#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, ErrorMessage);
             return result;
         }
 
-        //Alternative call form
+        //Alternative call forms
         public String GetFragment(FormMode Mode)
         {
             return GetFragment(Mode, AccessDeniedReason.UnknownOrNotDenied, null);
         }
 
-        //Alternative call form
+        public String GetFragment(FormMode Mode, String ErrorMessage)
+        {
+            return GetFragment(Mode, AccessDeniedReason.UnknownOrNotDenied, ErrorMessage);
+        }
         public String GetFragment(FormMode Mode, AccessDeniedReason Reason)
         {
             return GetFragment(Mode, Reason, null);

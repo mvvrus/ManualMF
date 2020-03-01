@@ -31,7 +31,7 @@ namespace ManualMF
                 case FormMode.DeniedForm:
                     return supplier.GetFragment(m_FormMode, m_Reason);
                 case FormMode.ErrorForm:
-                    return supplier.GetFragment(m_FormMode, m_Reason, m_ErrorMessage);
+                    return supplier.GetFragment(m_FormMode, m_ErrorMessage);
                 default:
                     return supplier.GetFragment(m_FormMode);
             }
