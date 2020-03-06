@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManualMFAdapter", "ManualMFAdapter\ManualMFAdapter.csproj", "{FA3C0AB7-EDF7-49AF-B26B-7DF861918012}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "manmfcmd", "manmfcmd\manmfcmd.csproj", "{6FD3A81B-E932-4D91-B059-5FF892A2CA03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{FA3C0AB7-EDF7-49AF-B26B-7DF861918012}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA3C0AB7-EDF7-49AF-B26B-7DF861918012}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA3C0AB7-EDF7-49AF-B26B-7DF861918012}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FD3A81B-E932-4D91-B059-5FF892A2CA03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FD3A81B-E932-4D91-B059-5FF892A2CA03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FD3A81B-E932-4D91-B059-5FF892A2CA03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FD3A81B-E932-4D91-B059-5FF892A2CA03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

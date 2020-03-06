@@ -9,11 +9,11 @@ using System.Runtime.Serialization;
 namespace ManualMF
 {
     [Serializable]
-    internal class ToManyRecodsAffectedException : Exception {
+    class ToManyRecodsAffectedException : Exception {
         public ToManyRecodsAffectedException() : base("More than one records affected. Erroneous SQL or bad database contents."){}
         protected ToManyRecodsAffectedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
-    internal class AccessController : IDisposable
+    class AccessController : IDisposable
     {
         //The object does not own the connection, only references it
         SqlConnection m_Connection;
@@ -53,14 +53,27 @@ namespace ManualMF
             return (1 == rc);
         }
 
-        internal Boolean Allow(String Upn, DateTime ValidUntil, Boolean FromRequestIPOnly)
+        public Boolean Allow(String Upn, DateTime ValidUntil, Boolean FromRequestIPOnly)
         {
             return UpdateUpnRecord(Upn, ValidUntil, FromRequestIPOnly, AccessState.Allowed);
         }
 
-        internal Boolean Deny(String Upn, DateTime ValidUntil)
+        public Boolean Deny(String Upn, DateTime ValidUntil)
         {
             return UpdateUpnRecord(Upn, ValidUntil, false, AccessState.Denied);
         }
+
+        public Boolean Clear(String Upn)
+        {
+            int rc;
+            using (SqlCommand cmd = new SqlCommand("DELETE FROM dbo.PERMISSIONS WHERE UPN=@UPN", m_Connection))
+            {
+                cmd.Parameters.Add("@UPN", SqlDbType.NVarChar).Value = Upn;
+                rc = cmd.ExecuteNonQuery();
+            }
+            if (rc > 1) throw new ToManyRecodsAffectedException();
+            return (1 == rc);
+        }
+        
     }
 }

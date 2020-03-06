@@ -1,0 +1,15 @@
+﻿Done = Операция выполнена.		
+NothingDone = Операция не выполнена.
+InvalidParameter = Недопустимый параметр
+InvalidSwitch = Недопустимый переключатель
+MissingUpn = Отсутствует параметр "Имя участника-пользователя"(UPN)
+Name = Имя
+Expiration = Срок действия
+State = Состояние
+IPAddress = Адрес IP
+NoData = Нет записей для отображения
+Pending = Ожидает
+Allowed = Разрешено
+Denied = Запрещено
+ADWarning = Предупреждение. Произошла ошибка при попытке связи с Active Directory:
+ADWarning2 = Имена пользователей недоступны.

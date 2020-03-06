@@ -1,0 +1,15 @@
+﻿Done = Done.
+NothingDone = Nothing done.
+InvalidParameter = Invalid parameter
+InvalidSwitch = Invalid switch
+MissingUpn = User principal name (UPN) parameter missing
+Name = Name
+Expiration = Expired
+State = State
+IPAddress = IP Address
+NoData = No records to display
+Pending = Pending
+Allowed = Allowed
+Denied = Denied
+ADWarning = Warning. Error contacting Active Directory:
+ADWarning2 = User names are unavailable.
