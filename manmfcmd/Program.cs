@@ -55,7 +55,7 @@ namespace ManualMF
                 NameValueCollection switch_values; //Holds values of switches from command line after parsing via SwitchValues method
                 try
                 {
-                    conn = new SqlConnection(ConfigurationManager.AppSettings["DBConnString"] ?? @"\\.\pipe\MICROSOFT##WID\tsql\query;Integrated Security=true;Database=ManualMF"); 
+                    conn = new SqlConnection(ConfigurationManager.AppSettings["DBConnString"] ?? @"Server=.\SQLExpress;Integrated Security=true;Database=ManualMF"); 
                     if ("list" == args[0])
                     { //Process "list" command 
                         //Skip the first argument

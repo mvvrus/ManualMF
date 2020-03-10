@@ -10,18 +10,22 @@ using System.Data.SqlClient;
 
 namespace ManualMF
 {
+    static class  AuthState { 
+        internal const int AuthPending=1; 
+        internal const int AlreadyAuthenticated=2;
+        internal const int AlreadyDenied = 3;
+    };
+
     public class ManualMFAdapter: IAuthenticationAdapter
     {
         //Context propertiy names for IAuthenticationContext.Dictionary
         //UPN - User's principal name from first stage (via claim)
         const String UPN="UPN";
-        //CONNMGR - the source of database connection used for the authentication
-        const String CONNMGR = "CONNMGR";
         //STATE - current state of authentication state machine
         const String STATE = "STATE";
 
         //Possible STATE values
-        enum AuthState {AuthPending, AlreadyAuthenticated, AlreadyDenied};
+        
 
         //Dispose and remove any objects stored  in the authentication context Data dictionary
         void ClearContext(IAuthenticationContext Context)
@@ -57,31 +61,20 @@ namespace ManualMF
         public IAdapterPresentation BeginAuthentication(Claim IdentityClaim, HttpListenerRequest Request, IAuthenticationContext Context)
         {
             //Perform context initialization
-            ConnManager connmgr = ConnManager.GetNewManager();
-            try {
-                Context.Data.Add(CONNMGR, connmgr);
-            }
-            catch (Exception ex) {
-                connmgr.Dispose();
-                throw ex;
-            }
             IPAddress access_from = ExtractOriginalIP(Request);
             String upn = IdentityClaim.Value;
             Context.Data.Add(UPN, upn);
             AccessState auth_state;
-            try
+            using (SqlConnection conn = new SqlConnection(Configuration.DBConnString))
             {
-                SqlConnection conn = connmgr.Acquire();
+                conn.Open();
                 using (AccessValidator validator = new AccessValidator(conn))
                 {
 
                     //Check current permission state in database, 
                     auth_state = validator.CheckAndRequest(upn, access_from, DateTime.Now.AddMinutes(15)); //TODO Change ValidUntil argement no to use a "magic" constant
                 }
-            }
-            finally
-            {
-                connmgr.Release();
+                conn.Close();
             }
             //Change state of authentication machine according to the permission state and select appropriate HTML fragment to be shown
             switch (auth_state)
@@ -109,28 +102,24 @@ namespace ManualMF
             Claims = null;
             AccessState acc_state;
             AccessDeniedReason deny_reason=AccessDeniedReason.UnknownOrNotDenied;
-            AuthState auth_state = (AuthState)Context.Data[STATE];
+            int auth_state = (int)Context.Data[STATE];
             switch (auth_state) {
                 case AuthState.AlreadyAuthenticated: //Authentication was successful already
                     acc_state = AccessState.Allowed;
                     break; 
                 case AuthState.AlreadyDenied: //Authentication was denied already
                 default: //Authentication was pending last time
-                    ConnManager connmgr = (ConnManager)Context.Data[CONNMGR];
                     //Get required infomation to check/cancel database record
                     IPAddress access_from = ExtractOriginalIP(Request);
                     String upn = (String)Context.Data[UPN];
                     if (ProofData.Properties.ContainsKey(HtmlFragmentSupplier.CancelButtonName))
                     {
                         //Cancel request: clear request record wich was cancelled while pending
-                        try
+                        using(SqlConnection conn = new SqlConnection(Configuration.DBConnString))
                         {
-                            SqlConnection conn = connmgr.Acquire();
+                            conn.Open();
                             using (AccessValidator validator = new AccessValidator(conn)) validator.Cancel(upn, access_from);
-                        }
-                        finally
-                        {
-                            connmgr.Release();
+                            conn.Close();
                         }
                     }
                     //Check for cancel request too along with already denied condition
@@ -141,19 +130,16 @@ namespace ManualMF
                     }
                     //If we are here we must check authentication in the database
                     //Check current permission state in the database
-                    try
+                    using(SqlConnection conn = new SqlConnection(Configuration.DBConnString))
                     {
-                        SqlConnection conn = connmgr.Acquire();
+                        conn.Open();
                         using (AccessValidator validator = new AccessValidator(conn))
                         {
                             AccessStateAndReason acc_state_reason = validator.Check(upn, access_from);
                             acc_state = acc_state_reason.State;
                             deny_reason = acc_state_reason.Reason;
                         }
-                    }
-                    finally
-                    {
-                        connmgr.Release();
+                        conn.Close();
                     }
                     break;
             }

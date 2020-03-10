@@ -9,22 +9,6 @@ namespace ManualMF
         public AccessState State;
         public AccessDeniedReason Reason;
         public AccessStateAndReason(AccessState _State, AccessDeniedReason _Reason) { State = _State; Reason = _Reason; }
-        /* Commented out because default ValueType imolemetation seems to be suitable
-        public override bool Equals(object obj)
-        {
-            if (null == obj) return false;
-            if (typeof(AccessStateAndReason) == obj.GetType())
-            {
-                return this.State == ((AccessStateAndReason)obj).State && this.Reason == ((AccessStateAndReason)obj).Reason;
-            }
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return State.GetHashCode() ^ Reason.GetHashCode();
-        }
-        */
     }
 
 }
