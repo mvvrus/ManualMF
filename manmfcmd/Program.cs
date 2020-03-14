@@ -9,6 +9,7 @@ using System.Data;
 using System.DirectoryServices;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace ManualMF
 {
@@ -183,9 +184,11 @@ namespace ManualMF
                     else 
                     { //Process all other commands
                         Boolean result = false; //Variable to show was a command actually performed
-                        String upn; //User principal name - the first argument of any AccessController method
-                        upn = args[1]; //Extract UPN from the 2-nd command line argument (without any checks for now)
                         if (args.Length < 2) throw new Exception(LocStrings.GetString("MissingUpn")); 
+                        String upn; //User principal name - the first argument of any AccessController method
+                        upn = args[1]; //Extract UPN from the 2-nd command line argument 
+                        if(!Regex.IsMatch(upn,@"\A[^@]+@[A-Z,a-z,0-9][A-Z,a-z,0-9,\-]*(\.[A-Z,a-z,0-9][A-Z,a-z,0-9,\-]*)*\Z")) //Check UPN format
+                            throw new ArgumentException(LocStrings.GetString("BadUpn")+": <user>@<domain.name>"); //Throw error if it is invalid
                         //Skip first 2 arguments (processed)
                         other_args = new String[args.Length - 2];
                         Array.Copy(args, 2, other_args, 0, other_args.Length);
@@ -215,6 +218,8 @@ namespace ManualMF
                                     //Call AccessController.Deny method to perform the command
                                     result = ac.Clear(upn);
                                     break;
+                                default: //Unknown command
+                                    throw new ArgumentException(LocStrings.GetString("InvalidParameter") + ": ", args[0]);
                             }
                         }
                         //Report result of the command performed

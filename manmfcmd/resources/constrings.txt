@@ -13,3 +13,4 @@ Allowed = Allowed
 Denied = Denied
 ADWarning = Warning. Error contacting Active Directory:
 ADWarning2 = User names are unavailable.
+BadUpn = Invalid UPN format. Valid format is
