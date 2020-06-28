@@ -25,7 +25,6 @@ namespace ManualMF
         public string GetFormHtml(int lcid)
         {
             HtmlFragmentSupplier supplier = HtmlFragmentSupplier.GetFragmentSupplier(lcid);
-            //TODO 
             switch (m_FormMode)
             {
                 case FormMode.DeniedForm:
@@ -36,23 +35,6 @@ namespace ManualMF
                     return supplier.GetFragment(m_FormMode);
             }
 
-            /*
-            //No:Do not specify hidden input AuthMetod event this is requred in documentation
-            const string REQUIRED_HIDDEN = "<input id=\"authMethod\" type=\"hidden\" name=\"AuthMethod\" value=\"%AuthMethod%\"> <input id=\"context\" type=\"hidden\" name=\"Context\" value=\"%Context%\">";
-            //const string REQUIRED_HIDDEN = "<input id=\"context\" type=\"hidden\" name=\"Context\" value=\"%Context%\">";
-            if (m_FormMode == FormMode.FinalClose)
-            {
-                return @"Press Close button to close this window or enter another site address to continue browsing.<br>"+
-                  @"<button type=""button"" onclick=""window.open('', '_self', ''); window.close();"">Close</button>";
-
-            }
-            else
-            //TODO Implement forms for: AlreadyAuthForm, DeniedForm, AlreadyAuthForm, ErrorForm
-            {
-                return "<form method=\"post\" id=\"authForm\">" + REQUIRED_HIDDEN + "<input id=\"submitButton\" type=\"submit\" name=\"" + AUTHBUTTON + "\" value=\"Auth\"><input id=\"signoutButton\" type=\"submit\" name=\"SignOut\" value=\"Sign Out\"></form>";
-                //TODO: Implement real input form
-            }
-            */ 
         }
 
         //Returns content to be included into the <HEAD> section of the authetication page

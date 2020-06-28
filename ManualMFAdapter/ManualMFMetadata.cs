@@ -24,7 +24,7 @@ namespace ManualMF
 
         public int[] AvailableLcids
         {
-            get { return new[] { new CultureInfo("en-us").LCID }; }
+            get { return new[] { new CultureInfo("en").LCID, new CultureInfo("ru").LCID }; }
         }
 
         public Dictionary<int, string> Descriptions
@@ -32,7 +32,8 @@ namespace ManualMF
             get
             {
                 Dictionary<int, string> result = new Dictionary<int, string>();
-                result.Add(new CultureInfo("en-us").LCID, "Performs multi-factor authentication via manual permissive action from human operator.");
+                result.Add(new CultureInfo("en").LCID, "Performs multi-factor authentication via manual permissive action from human operator.");
+                result.Add(new CultureInfo("ru").LCID, "Выполняет многофакторную аутентификацию с использованием разрешения, выданного вручную человеком-оператором");
                 return result;
             }
         }
@@ -41,7 +42,8 @@ namespace ManualMF
         {
             get {
                 Dictionary<int, string> result = new Dictionary<int, string>();
-                result.Add(new CultureInfo("en-us").LCID, "Operator-assisted MFA Adapter");
+                result.Add(new CultureInfo("en").LCID, "Operator-assisted MFA Adapter");
+                result.Add(new CultureInfo("ru").LCID, "Адаптер МФА с помощью оператора");
                 return result;
             }
         }

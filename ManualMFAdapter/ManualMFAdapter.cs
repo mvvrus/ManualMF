@@ -13,7 +13,7 @@ namespace ManualMF
     static class  AuthState { 
         internal const int AuthPending=1; 
         internal const int AlreadyAuthenticated=2;
-        internal const int AlreadyDenied = 3;
+        internal const int ProcessingTerminated = 3;
     };
 
     public class ManualMFAdapter: IAuthenticationAdapter
@@ -84,7 +84,7 @@ namespace ManualMF
                     return new ManualMFPresentation(FormMode.AlreadyAuthForm);
                 case AccessState.Denied:
                     //Handle recently denied case
-                    Context.Data[STATE] = AuthState.AlreadyDenied;
+                    Context.Data[STATE] = AuthState.ProcessingTerminated;
                     return new ManualMFPresentation(AccessDeniedReason.DeniedByOperator);
                 case AccessState.Pending:
                     //Handle request that was just made or not processed by operator yet
@@ -107,7 +107,7 @@ namespace ManualMF
                 case AuthState.AlreadyAuthenticated: //Authentication was successful already
                     acc_state = AccessState.Allowed;
                     break; 
-                case AuthState.AlreadyDenied: //Authentication was denied already
+                case AuthState.ProcessingTerminated: //Safeguard agaist processing already terminated request
                 default: //Authentication was pending last time
                     //Get required infomation to check/cancel database record
                     IPAddress access_from = ExtractOriginalIP(Request);
@@ -121,10 +121,11 @@ namespace ManualMF
                             using (AccessValidator validator = new AccessValidator(conn)) validator.Cancel(upn, access_from);
                             conn.Close();
                         }
+                        Context.Data[STATE] = auth_state = AuthState.ProcessingTerminated;
                     }
-                    //Check for cancel request too along with already denied condition
-                    if (AuthState.AlreadyDenied == auth_state || ProofData.Properties.ContainsKey(HtmlFragmentSupplier.CancelButtonName)) //Left temporary cancel check implementation for a while
-                    {   //If so, leave the authrntication pipeline 
+                    //Check for already terminated request (due to user cancels the request or already denied condition)
+                    if (AuthState.ProcessingTerminated == auth_state ) 
+                    {   //If so, leave the authentication pipeline 
                         ClearContext(Context); //Dispose all context objects
                         return new ManualMFPresentation(FormMode.FinalClose); //show them the form, from which they never return to the pipeline
                     }
@@ -149,7 +150,7 @@ namespace ManualMF
                 case AccessState.Pending: //Tell them that they should wait more
                     return new ManualMFPresentation(FormMode.WaitMoreForm);
                 case AccessState.Denied: //Found that authentication was denied
-                    Context.Data[STATE] = AuthState.AlreadyDenied; //Set authentication state to get out of the pipeline next time we return to this method
+                    Context.Data[STATE] = AuthState.ProcessingTerminated; //Set authentication state to get out of the pipeline next time we return to this method
                     return new ManualMFPresentation(deny_reason); //Notify user that his access was denied and why
                 case AccessState.Allowed: //authentication was successful
                     ClearContext(Context); ////Dispose all context objects

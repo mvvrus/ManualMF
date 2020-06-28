@@ -3,7 +3,10 @@ REQUIRED_HIDDEN = <input id="authMethod" type="hidden" name="AuthMethod" value="
 CancelButton = cancelButton
 
 #
-NormalForm = <div class="groupmargin">[#NormalFormDescriptionText]<br/>[#CheckAboutText]<br/>[#CancelAboutText]</div><form method="post" id="authForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Check" value="[#CheckButtonText]"><input id="cancelButton" type="submit" name="[!CancelButton]" value="[#CancelButtonText]"></form>
-WaitMoreForm = <div class="groupmargin">[#WaitMoreFormDescriptionText]<br/>[#CheckAboutText]<br/>[#CancelAboutText]</div><form method="post" id="authForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Check" value="[#CheckButtonText]"><input id="cancelButton" type="submit" name="[!CancelButton]" value="[#CancelButtonText]"></form>
-AlreadyAuthForm = <div class="groupmargin">[#AlreadyAuthFormDescriptionText]<br/>[#ContinueAboutText]</div><form method="post" id="authForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Continue" value="[#ContinueButtonText]"></form>
-DeniedForm = <div class="groupmargin">[#DeniedFormStartText]<br/>#DenyReason#<br/>[#DeniedFormRepeatText]<br/>[#ContinueToCloseAboutText]</div><input type="submit" onclick="window.open('', '_self', ''); window.close();return false;" name="Close" value="[#ContinueButtonText]">
+NormalForm = <div class="groupMargin">[#NormalFormDescriptionText]<br/>[#CheckAboutText]<br/>[#CancelAboutText]</div><div class="submitMargin"><form method="post" id="authForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Check" value="[#CheckButtonText]"><input id="cancelButton" type="submit" name="[!CancelButton]" value="[#CancelButtonText]"></form></div>
+WaitMoreForm = <div class="groupMargin">[#WaitMoreFormDescriptionText]<br/>[#CheckAboutText]<br/>[#CancelAboutText]</div><div class="submitMargin"><form method="post" id="authForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Check" value="[#CheckButtonText]"><input id="cancelButton" type="submit" name="[!CancelButton]" value="[#CancelButtonText]"></form></div>
+AlreadyAuthForm = <div class="groupMargin">[#AlreadyAuthFormDescriptionText]<br/>[#ContinueAboutText]</div><div class="submitMargin"><form method="post" id="autocloseForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Continue" value="[#ContinueButtonText]"></form></div><script>document.getElementById('submitButton').click();</script>
+DeniedForm = <div class="groupMargin">[#DeniedFormStartText]<br/>#DenyReason#<br/>[#DeniedFormRepeatText]<br/>[#ContinueToCloseAboutText]</div><div class="submitMargin"><form method="post" id="authForm">[!REQUIRED_HIDDEN]<input id="submitButton" type="submit" name="Continue" value="[#ContinueButtonText]"></form></div>
+ErrorForm = <div class="groupMargin">[#ErrorFormDescriptionText]: <span class="error">"#ErrorMessage#"</span></div>
+FinalCloseForm = <div class="groupMargin">[#CloseAboutText]</div>
+
