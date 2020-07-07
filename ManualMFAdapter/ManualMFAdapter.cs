@@ -65,6 +65,7 @@ namespace ManualMF
             String upn = IdentityClaim.Value;
             Context.Data.Add(UPN, upn);
             AccessState auth_state;
+            EndpointAccessToken token;
             using (SqlConnection conn = new SqlConnection(Configuration.DBConnString))
             {
                 conn.Open();
@@ -72,7 +73,7 @@ namespace ManualMF
                 {
 
                     //Check current permission state in database, 
-                    auth_state = validator.CheckAndRequest(upn, access_from, DateTime.Now.AddMinutes(15)); //TODO Change ValidUntil argement no to use a "magic" constant
+                    auth_state = validator.CheckAndRequest(upn, access_from, DateTime.Now.AddMinutes(15),out token); //TODO Change ValidUntil argement no to use a "magic" constant
                 }
                 conn.Close();
             }
@@ -89,7 +90,7 @@ namespace ManualMF
                 case AccessState.Pending:
                     //Handle request that was just made or not processed by operator yet
                     Context.Data[STATE] = AuthState.AuthPending;
-                    return new ManualMFPresentation();
+                    return new ManualMFPresentation(FormMode.NormalForm,token);
                 default:
                     //Something went wrong, or else we never get here
                     throw new Exception("Invalid request state from the database:"); //TODO - insert auth_state value into the message
@@ -103,6 +104,7 @@ namespace ManualMF
             AccessState acc_state;
             AccessDeniedReason deny_reason=AccessDeniedReason.UnknownOrNotDenied;
             int auth_state = (int)Context.Data[STATE];
+            EndpointAccessToken token = null;
             switch (auth_state) {
                 case AuthState.AlreadyAuthenticated: //Authentication was successful already
                     acc_state = AccessState.Allowed;
@@ -139,6 +141,7 @@ namespace ManualMF
                             AccessStateAndReason acc_state_reason = validator.Check(upn, access_from);
                             acc_state = acc_state_reason.State;
                             deny_reason = acc_state_reason.Reason;
+                            token = new EndpointAccessToken(acc_state_reason.Token);
                         }
                         conn.Close();
                     }
@@ -148,7 +151,7 @@ namespace ManualMF
             switch (acc_state)
             {
                 case AccessState.Pending: //Tell them that they should wait more
-                    return new ManualMFPresentation(FormMode.WaitMoreForm);
+                    return new ManualMFPresentation(FormMode.WaitMoreForm, token);
                 case AccessState.Denied: //Found that authentication was denied
                     Context.Data[STATE] = AuthState.ProcessingTerminated; //Set authentication state to get out of the pipeline next time we return to this method
                     return new ManualMFPresentation(deny_reason); //Notify user that his access was denied and why

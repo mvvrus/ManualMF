@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityServer.Web.Authentication.External;
+using System.Text.RegularExpressions;
 
 
 namespace ManualMF
@@ -14,14 +15,14 @@ namespace ManualMF
         FormMode m_FormMode;
         AccessDeniedReason m_Reason;
         String m_ErrorMessage;
+        String m_EPAccessToken;
         //Normal form - ask the user to inform an operator and wait for a decision
-        public ManualMFPresentation() { m_FormMode = FormMode.NormalForm;}
         public ManualMFPresentation(FormMode aFormMode) { m_FormMode = aFormMode;}
-        public ManualMFPresentation(AccessDeniedReason Reason) { m_FormMode = FormMode.DeniedForm; m_Reason = Reason;}
+        public ManualMFPresentation(FormMode aFormMode, String EPAccessToken) { m_FormMode = aFormMode; m_EPAccessToken = EPAccessToken;}
+        public ManualMFPresentation(AccessDeniedReason Reason) { m_FormMode = FormMode.DeniedForm; m_Reason = Reason; }
         public ManualMFPresentation(string ErrorMessage) { m_FormMode = FormMode.ErrorForm; m_ErrorMessage = ErrorMessage; }
-        // public const String AUTHBUTTON = "OKButton";
+
         //Returns an input form part of the authetication page
-        //TEMP: just return a form with a single button
         public string GetFormHtml(int lcid)
         {
             HtmlFragmentSupplier supplier = HtmlFragmentSupplier.GetFragmentSupplier(lcid);
@@ -31,6 +32,9 @@ namespace ManualMF
                     return supplier.GetFragment(m_FormMode, m_Reason);
                 case FormMode.ErrorForm:
                     return supplier.GetFragment(m_FormMode, m_ErrorMessage);
+                case FormMode.NormalForm:
+                case FormMode.WaitMoreForm:
+                    return supplier.GetFragment(m_FormMode,m_EPAccessToken);
                 default:
                     return supplier.GetFragment(m_FormMode);
             }
