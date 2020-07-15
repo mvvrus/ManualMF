@@ -75,14 +75,23 @@ namespace ManualMF
 
     internal class AccessWaiter
     {
+        static TimeSpan FIRST_WAIT_TIME = new TimeSpan(0, 0, 10);
         private enum EndWaitReason { NoEndWait = -1, Changed = 0, Forbidden = 1};
 
         private SqlConnection m_Connection;
-        private AutoResetEvent m_Event = new AutoResetEvent(false);
-        private SqlNotificationEventArgs m_ChangeArgs = null;
 
         public AccessWaiter(SqlConnection Connection)  { m_Connection = Connection; }
+
         public Boolean WaitForAccessChange(String Upn, String EPAccessToken)
+        {
+            return WaitForAccessChangeAsync(Upn, EPAccessToken).GetAwaiter().GetResult();
+        }
+
+        public Task<Boolean> WaitForAccessChangeAsync(String Upn, String EPAccessToken) {
+            return WaitForAccessChangeAsync(Upn, EPAccessToken, CancellationToken.None);
+        }
+
+        public async Task<Boolean> WaitForAccessChangeAsync(String Upn, String EPAccessToken, CancellationToken Ct)
         {
             SqlCommand rdcmd = new SqlCommand("SELECT EPACCESSTOKEN,VALID_UNTIL,REQUEST_STATE FROM dbo.PERMISSIONS WHERE UPN=@UPN AND VALID_UNTIL>@VALID_UNTIL", m_Connection);
             rdcmd.Parameters.Add("@UPN", SqlDbType.NVarChar).Value = Upn;
@@ -91,28 +100,32 @@ namespace ManualMF
             EndWaitReason ewr = EndWaitReason.NoEndWait;
             DateTime valid_until = DateTime.MinValue;
             Boolean first_run = true;
+            SqlNotificationEventArgs changeArgs = null;
             do
             {
                 TimeSpan timeout;
                 DateTime this_moment = DateTime.Now;
                 rdcmd.Notification = null;
                 valid_until_param.Value = this_moment;
-                timeout = first_run ? new TimeSpan(0, 0, 10) : valid_until - this_moment;
+                TaskCompletionSource<SqlNotificationEventArgs> tcs = new TaskCompletionSource<SqlNotificationEventArgs>();
+                timeout = first_run ? FIRST_WAIT_TIME : valid_until - this_moment;
                 SqlDependency dep = new SqlDependency(rdcmd, null, (int)Math.Ceiling(timeout.TotalSeconds > 1 ? timeout.TotalSeconds : 1));
-                dep.OnChange += (sender, e) => { m_ChangeArgs = e; m_Event.Set(); };
+                dep.OnChange += (sender, e) => tcs.TrySetResult(e);
 
-                SqlDataReader rdr = rdcmd.ExecuteReader();
+                SqlDataReader rdr = await rdcmd.ExecuteReaderAsync(Ct);
                 try
                 {
                     if (rdr.HasRows)
                     {
                         rdr.Read();
-                        access_checked = access_checked || (rdr.IsDBNull(0) || ((String)rdr[0]).Equals(EPAccessToken));
                         valid_until = (DateTime)rdr[1];
-                        if (!access_checked) ewr = EndWaitReason.Forbidden;
-                        else if (first_run && (AccessState)rdr[2] != AccessState.Pending) ewr = EndWaitReason.Changed;
+                        if (first_run) {
+                          access_checked = access_checked || (rdr.IsDBNull(0) || ((String)rdr[0]).Equals(EPAccessToken));
+                          if (!access_checked) ewr = EndWaitReason.Forbidden;
+                          else if ((AccessState)rdr[2] != AccessState.Pending) ewr = EndWaitReason.Changed;
+                        }
                     }
-                    else ewr = access_checked?EndWaitReason.Changed:EndWaitReason.Forbidden;
+                    else ewr = !first_run || access_checked?EndWaitReason.Changed:EndWaitReason.Forbidden;
                 }
                 finally
                 {
@@ -127,8 +140,17 @@ namespace ManualMF
                 }
                 if (EndWaitReason.NoEndWait == ewr)
                 {
-                    m_Event.WaitOne();
-                    if ( m_ChangeArgs.Type != SqlNotificationType.Change) throw new QueryNotificationException(m_ChangeArgs);
+                    CancellationTokenRegistration? ctr=null;
+                    if (Ct != CancellationToken.None)  ctr = Ct.Register( ()=>tcs.TrySetCanceled() );
+                    try
+                    {
+                        changeArgs = await tcs.Task;
+                    }
+                    finally
+                    {
+                        if (ctr.HasValue) ctr.Value.Dispose();
+                    }
+                    if ( changeArgs.Type != SqlNotificationType.Change) throw new QueryNotificationException(changeArgs);
                 }
             } while (EndWaitReason.NoEndWait==ewr);
             return EndWaitReason.Changed==ewr;
