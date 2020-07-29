@@ -55,7 +55,6 @@ namespace ManualMF
                 SqlNotificationType _type = (SqlNotificationType)info.GetValue("QNXType", typeof(SqlNotificationType));
                 m_event_args = new SqlNotificationEventArgs(_type, _info, _source);
             }
-            throw new NotImplementedException();
         }
 
         [SecurityCritical]
@@ -75,12 +74,31 @@ namespace ManualMF
 
     internal class AccessWaiter
     {
-        static TimeSpan FIRST_WAIT_TIME = new TimeSpan(0, 0, 10);
-        private enum EndWaitReason { NoEndWait = -1, Changed = 0, Forbidden = 1};
+        public const Int32 FIRST_WAIT_TIME = 10;
+        public const Int32 MAX_WAIT_TIME = 600;
+
+        private enum EndWaitReason { NoEndWait = -1, Changed = 0, Forbidden = 1 };
 
         private SqlConnection m_Connection;
+        private Int32 m_FirstWaitTime = FIRST_WAIT_TIME;
+        private Int32 m_MaxWaitTime = MAX_WAIT_TIME;
 
         public AccessWaiter(SqlConnection Connection)  { m_Connection = Connection; }
+        public AccessWaiter(SqlConnection Connection, TimeSpan MaxWaitTime) 
+        { 
+            m_Connection = Connection; 
+            m_MaxWaitTime = (Int32)(MaxWaitTime.TotalSeconds);
+            if (m_MaxWaitTime < 1) throw new ArgumentException();
+        }
+
+        public AccessWaiter(SqlConnection Connection, TimeSpan MaxWaitTime, TimeSpan FirstWaitTime) 
+        { 
+            m_Connection = Connection; 
+            m_MaxWaitTime = (Int32)(MaxWaitTime.TotalSeconds);
+            if(m_MaxWaitTime<1) throw new ArgumentException();
+            m_FirstWaitTime = (Int32)(FirstWaitTime.TotalSeconds);
+            if(m_FirstWaitTime<1) throw new ArgumentException();
+        }
 
         public Boolean WaitForAccessChange(String Upn, String EPAccessToken)
         {
@@ -103,13 +121,15 @@ namespace ManualMF
             SqlNotificationEventArgs changeArgs = null;
             do
             {
-                TimeSpan timeout;
+                Int32 timeout;
                 DateTime this_moment = DateTime.Now;
                 rdcmd.Notification = null;
                 valid_until_param.Value = this_moment;
                 TaskCompletionSource<SqlNotificationEventArgs> tcs = new TaskCompletionSource<SqlNotificationEventArgs>();
-                timeout = first_run ? FIRST_WAIT_TIME : valid_until - this_moment;
-                SqlDependency dep = new SqlDependency(rdcmd, null, (int)Math.Ceiling(timeout.TotalSeconds > 1 ? timeout.TotalSeconds : 1));
+                timeout = first_run ? m_FirstWaitTime : (int)Math.Ceiling((valid_until - this_moment).TotalSeconds);
+                if(timeout < 1) timeout=1;
+                if (timeout > m_MaxWaitTime) timeout = m_MaxWaitTime;
+                SqlDependency dep = new SqlDependency(rdcmd, null, timeout);
                 dep.OnChange += (sender, e) => tcs.TrySetResult(e);
 
                 SqlDataReader rdr = await rdcmd.ExecuteReaderAsync(Ct);
