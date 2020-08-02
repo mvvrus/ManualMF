@@ -65,7 +65,7 @@ namespace ManualMF
             String upn = IdentityClaim.Value;
             Context.Data.Add(UPN, upn);
             AccessState auth_state;
-            EndpointAccessToken token;
+            int? token;
             using (SqlConnection conn = new SqlConnection(Configuration.DBConnString))
             {
                 conn.Open();
@@ -104,7 +104,7 @@ namespace ManualMF
             AccessState acc_state;
             AccessDeniedReason deny_reason=AccessDeniedReason.UnknownOrNotDenied;
             int auth_state = (int)Context.Data[STATE];
-            EndpointAccessToken token = null;
+            int? token = null;
             switch (auth_state) {
                 case AuthState.AlreadyAuthenticated: //Authentication was successful already
                     acc_state = AccessState.Allowed;
@@ -141,7 +141,7 @@ namespace ManualMF
                             AccessStateAndReason acc_state_reason = validator.Check(upn, access_from);
                             acc_state = acc_state_reason.State;
                             deny_reason = acc_state_reason.Reason;
-                            token = new EndpointAccessToken(acc_state_reason.Token);
+                            token = acc_state_reason.Token;
                         }
                         conn.Close();
                     }

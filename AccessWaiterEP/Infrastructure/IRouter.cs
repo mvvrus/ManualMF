@@ -11,11 +11,12 @@ namespace AccessWaiterEP.Infrastructure
     {
         int EmptyInstance{get;}
         IAppInstance FindInstance(int Instance);
-        IAppInstanceFactoty GetFactory();
+        IAppInstanceFactory GetFactory();
     }
 
-    public interface IAppInstanceFactoty
+    public interface IAppInstanceFactory
     {
         IAppInstance CreateNewInstance(out int Instance);
+        void Release(IAppInstance AppInstance);
     }
 }

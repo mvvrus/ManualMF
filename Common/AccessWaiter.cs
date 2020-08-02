@@ -100,16 +100,16 @@ namespace ManualMF
             if(m_FirstWaitTime<1) throw new ArgumentException();
         }
 
-        public Boolean WaitForAccessChange(String Upn, String EPAccessToken)
+        public Boolean WaitForAccessChange(String Upn, int? EPAccessToken)
         {
             return WaitForAccessChangeAsync(Upn, EPAccessToken).GetAwaiter().GetResult();
         }
 
-        public Task<Boolean> WaitForAccessChangeAsync(String Upn, String EPAccessToken) {
+        public Task<Boolean> WaitForAccessChangeAsync(String Upn, int? EPAccessToken) {
             return WaitForAccessChangeAsync(Upn, EPAccessToken, CancellationToken.None);
         }
 
-        public async Task<Boolean> WaitForAccessChangeAsync(String Upn, String EPAccessToken, CancellationToken Ct)
+        public async Task<Boolean> WaitForAccessChangeAsync(String Upn, int? EPAccessToken, CancellationToken Ct)
         {
             SqlCommand rdcmd = new SqlCommand("SELECT EPACCESSTOKEN,VALID_UNTIL,REQUEST_STATE FROM dbo.PERMISSIONS WHERE UPN=@UPN AND VALID_UNTIL>@VALID_UNTIL", m_Connection);
             rdcmd.Parameters.Add("@UPN", SqlDbType.NVarChar).Value = Upn;
@@ -140,7 +140,7 @@ namespace ManualMF
                         rdr.Read();
                         valid_until = (DateTime)rdr[1];
                         if (first_run) {
-                          access_checked = access_checked || (rdr.IsDBNull(0) || ((String)rdr[0]).Equals(EPAccessToken));
+                          access_checked = access_checked || (rdr.IsDBNull(0) || ((int?)rdr[0]).Equals(EPAccessToken));
                           if (!access_checked) ewr = EndWaitReason.Forbidden;
                           else if ((AccessState)rdr[2] != AccessState.Pending) ewr = EndWaitReason.Changed;
                         }

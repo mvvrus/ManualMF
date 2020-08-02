@@ -6,36 +6,47 @@ using AccessWaiterEP.Infrastructure;
 
 namespace AccessWaiterEP
 {
-    public class LocalRouter: IRouter,IAppInstanceFactoty
+    class LocalRouter: IRouter,IAppInstanceFactory
     {
-        private Dictionary<int, IAppInstance> s_Instances = new Dictionary<int, IAppInstance>();
+        private Dictionary<int, IAppInstance> m_Instances = new Dictionary<int, IAppInstance>();
+        Random m_IdGen = new Random();
         private LocalRouter() { }
-        private static LocalRouter Router = new LocalRouter();
-        public static IRouter GetRouter()
-        {
-            return Router;
-        }
+        private static LocalRouter s_Router = new LocalRouter();
 
-        public IAppInstance FindInstance(int Instance)
-        {
-            return s_Instances[Instance];
-        }
+        public static IRouter GetRouter() { return s_Router; }
 
+        public IAppInstance FindInstance(int Instance) {return m_Instances.ContainsKey(Instance)?m_Instances[Instance]:null;}
+        
+        public int EmptyInstance {get { return 0; } }
+        
+        public IAppInstanceFactory GetFactory() {return this;}
+
+        //IAppInstanceFactoty methods
         public IAppInstance CreateNewInstance(out int Instance)
         {
-            throw new NotImplementedException();
+            do
+            {
+                Instance = m_IdGen.Next(1, Int32.MaxValue);
+            } while (m_Instances.ContainsKey(Instance));
+            AppClass result = new AppClass(this,Instance);
+            try
+            {
+                m_Instances.Add(Instance, result);
+            }
+            catch {
+                result.Dispose();
+                throw;
+            }
+            return result;
         }
 
-
-        public int EmptyInstance
+        public void Release(IAppInstance AppInstance)
         {
-            get { return 0; }
-        }
-
-
-        public IAppInstanceFactoty GetFactory()
-        {
-            return this;
+            if (m_Instances.ContainsKey(AppInstance.Key))
+            {
+                m_Instances.Remove(AppInstance.Key);
+                ((AppClass)AppInstance).Dispose();
+            }
         }
     }
 }

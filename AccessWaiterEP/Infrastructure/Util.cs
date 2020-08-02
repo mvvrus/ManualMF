@@ -48,7 +48,7 @@ namespace AccessWaiterEP.Infrastructure
             // Json pattern for the request: {"instance_id":<id>,...}
             StreamReader rdr = new StreamReader(request.InputStream, request.ContentEncoding);
             String body = rdr.ReadToEnd();
-            if (request.RequestType != "POST" || request.ContentType.ToLower() != "application/json") throw new Exception(); //TODO Set correct exception type
+            if (request.RequestType != "POST" || request.ContentType.ToLower() != "application/json") throw new HttpException(400,"Invalid HTTP method or content-type"); 
             return ExtractIntField(body, "instance_id");
         }
     }

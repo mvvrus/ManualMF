@@ -53,7 +53,7 @@ namespace ManualMF
                         {
                             db_allowfromip = new IPAddress((byte[])rdr[1]);
                         }
-                        if (!rdr.IsDBNull(3)) result.Token = (String)rdr[3];
+                        if (!rdr.IsDBNull(3)) result.Token = (int)rdr[3];
                         result.State = (AccessState)rdr[2];
                     }
                     else record_exists = false;
@@ -93,7 +93,7 @@ namespace ManualMF
         //See if request for the user is already exists in the DB and not expired and not allowed from different IP address only
         //If so, return request state
         //Else put new request in pending state into the database
-        public AccessState CheckAndRequest(String Upn, IPAddress AccessedFrom, DateTime ValidUntil, out EndpointAccessToken Token)
+        public AccessState CheckAndRequest(String Upn, IPAddress AccessedFrom, DateTime ValidUntil, out int? Token)
         {
             //Check end of validity period passed
             if(ValidUntil == null || ValidUntil<DateTime.Now) {
@@ -127,7 +127,7 @@ namespace ManualMF
                                 db_valid_until = (DateTime)rdr[0];
                                 if (!rdr.IsDBNull(1)) db_allowfromip = new IPAddress((byte[])rdr[1]);
                                 db_state = (AccessState)rdr[2];
-                                if (!rdr.IsDBNull(3)) Token = new EndpointAccessToken((String)rdr[3]);
+                                if (!rdr.IsDBNull(3)) Token = (int)rdr[3];
                             }
                         }
                         finally
@@ -142,8 +142,8 @@ namespace ManualMF
                         {
                             insupdcmd.CommandText = "INSERT INTO dbo.PERMISSIONS(UPN,VALID_UNTIL,REQUEST_STATE,FROM_IP,EPACCESSTOKEN) VALUES(@UPN,@VALID_UNTIL,@REQUEST_STATE,@FROM_IP,@EPACCESSTOKEN)";
                             //Initilaize endpoint access token value
-                            Token=new EndpointAccessToken(new Random().Next(Int32.MaxValue).ToString());
-                            insupdcmd.Parameters.Add("@EPACCESSTOKEN", SqlDbType.NVarChar).Value = (String)Token;
+                            Token=new Random().Next(Int32.MaxValue);
+                            insupdcmd.Parameters.Add("@EPACCESSTOKEN", SqlDbType.NVarChar).Value = (int?)Token;
                         }
                         //else it is within validity period and condition "allowed, but not from this ip" is not met - return the state from DB record
                         else if (db_valid_until >= DateTime.Now &&

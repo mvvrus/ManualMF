@@ -60,9 +60,15 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Common\AccessDefs.cs">
+      <Link>AccessDefs.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\AccessWaiter.cs">
+      <Link>AccessWaiter.cs</Link>
+    </Compile>
     <Compile Include="APIHandler.cs" />
+    <Compile Include="AppClass.cs" />
     <Compile Include="Infrastructure\IAppInstance.cs" />
-    <Compile Include="Infrastructure\IDeputy.cs" />
     <Compile Include="Infrastructure\IRouter.cs" />
     <Compile Include="LocalRouter.cs" />
     <Compile Include="Infrastructure\MVVrus\Utility\JsonSurgery.cs" />

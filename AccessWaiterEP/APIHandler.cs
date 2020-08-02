@@ -17,7 +17,7 @@ namespace AccessWaiterEP
         {
             context.Response.ContentType = "application/json";
             IRouter router = LocalRouter.GetRouter();
-            IAppInstanceFactoty app_instance_factory = router.GetFactory();
+            IAppInstanceFactory app_instance_factory = router.GetFactory();
             IAppInstance app_instance = null;
             int instance_id = router.EmptyInstance;
             try
@@ -38,26 +38,34 @@ namespace AccessWaiterEP
                     app_instance = router.FindInstance(instance_id);
                 if (null == app_instance)
                 {
-                    //TODO Check for null app_instance
+                    //Check for null app_instance
                     throw new ArgumentException("No application with this instance_id.");
                 }
-                Task<String> result = app_instance.CallAsyncMethodAsync(req_data.Rest);
                 String result_json;
+                Task<String> result = app_instance.DispatchAsync(req_data.Rest);
 
-                if (no_inst_id && !result.IsCompleted)
+                try
                 {
-                    app_instance.ReleaseReference(result); //Allow the application instance to discard the outstanding task (because a client could never retry)
-                    //No instance_id was set in the request. Return retry response with generated InstanceID to the client
-                    JavaScriptSerializer jss = new JavaScriptSerializer();
-                    context.Response.Write(jss.Serialize(new RetryReturn(instance_id)));
-                    return;
-                }
+                    if (no_inst_id && !result.IsCompleted)
+                    {
+                        //No instance_id was set in the request and the client should wait more (via call retry)
+                        //Return retry response with generated InstanceID to the client to be used in a callretry
+                        JavaScriptSerializer jss = new JavaScriptSerializer();
+                        context.Response.Write(jss.Serialize(new RetryReturn(instance_id)));
+                        app_instance.Abandon(result); //Tell the application instance that our resulting task has become orphaned
+                        return;
+                    }
 
+
+                }
+                catch (Exception)
+                {
+                    app_instance.Abandon(result); //Tell the application instance that our resulting task has become orphaned
+                    throw;
+                }                
                 //Wait for completion and return response from call to the client 
                 result_json = await result;
 
-                //Try to release dynamic app_instance, set instance_id to the EmptyInstance, if it is done
-                if (app_instance_factory != null && app_instance.TryRelease()) instance_id = router.EmptyInstance;
                 //Convert null response to an empty one
                 if (null == result_json) result_json = "{}";
                 //Inject response_type field value for normal return

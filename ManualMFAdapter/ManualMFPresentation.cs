@@ -15,10 +15,10 @@ namespace ManualMF
         FormMode m_FormMode;
         AccessDeniedReason m_Reason;
         String m_ErrorMessage;
-        String m_EPAccessToken;
+        int? m_EPAccessToken;
         //Normal form - ask the user to inform an operator and wait for a decision
         public ManualMFPresentation(FormMode aFormMode) { m_FormMode = aFormMode;}
-        public ManualMFPresentation(FormMode aFormMode, String EPAccessToken) { m_FormMode = aFormMode; m_EPAccessToken = EPAccessToken;}
+        public ManualMFPresentation(FormMode aFormMode, int? EPAccessToken) { m_FormMode = aFormMode; m_EPAccessToken = EPAccessToken;}
         public ManualMFPresentation(AccessDeniedReason Reason) { m_FormMode = FormMode.DeniedForm; m_Reason = Reason; }
         public ManualMFPresentation(string ErrorMessage) { m_FormMode = FormMode.ErrorForm; m_ErrorMessage = ErrorMessage; }
 

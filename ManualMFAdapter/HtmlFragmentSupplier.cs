@@ -104,7 +104,7 @@ namespace ManualMF
         }
 
         //Create HTML fragment to return
-        String GetFragment(FormMode Mode, AccessDeniedReason Reason, String ErrorMessage, EndpointAccessToken Token=null)
+        String GetFragment(FormMode Mode, AccessDeniedReason Reason, String ErrorMessage, int? Token=null)
         {
             String fragment_name = Enum.GetName(typeof(FormMode), Mode); //Get resource string name for the fragment template
             String html_template = s_Fragments[fragment_name]; //Extract fragment template from resources
@@ -121,7 +121,7 @@ namespace ManualMF
                 result=new Regex("#ErrorMessage#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, ErrorMessage);
             //Insert EndpointAccessToken Token if any
             if (Token != null)
-                result = new Regex("#EPAccessToken#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, Token);
+                result = new Regex("#EPAccessToken#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, Token.Value.ToString());
             return result;
         }
 
@@ -131,7 +131,7 @@ namespace ManualMF
             return GetFragment(Mode, AccessDeniedReason.UnknownOrNotDenied, null);
         }
 
-        public String GetFragment(FormMode Mode,EndpointAccessToken Token)
+        public String GetFragment(FormMode Mode,int? Token)
         {
             return GetFragment(Mode, AccessDeniedReason.UnknownOrNotDenied, null,Token);
         }

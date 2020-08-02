@@ -8,8 +8,9 @@ namespace AccessWaiterEP.Infrastructure
 {
     public interface IAppInstance
     {
-        Task<String> CallAsyncMethodAsync(String Json);
-        Boolean TryRelease();
-        void ReleaseReference(Task<String> OutstandingTask);
+        Task<String> DispatchAsync(String Json);
+        void Abandon(Task OutstandingTask);
+        int Key { get; }
+        bool CanRelease();
     }
 }
