@@ -23,6 +23,8 @@ namespace ManualMF
         const String UPN="UPN";
         //STATE - current state of authentication state machine
         const String STATE = "STATE";
+        //TOKEN - access tocken controlling access for checking
+        const String TOKEN = "TOKEN";
 
         //Possible STATE values
         
@@ -77,6 +79,8 @@ namespace ManualMF
                 }
                 conn.Close();
             }
+            //Save access token gotten for later checks
+            Context.Data.Add(TOKEN, token);
             //Change state of authentication machine according to the permission state and select appropriate HTML fragment to be shown
             switch (auth_state)
             {
@@ -107,8 +111,12 @@ namespace ManualMF
             int? token = null;
             switch (auth_state) {
                 case AuthState.AlreadyAuthenticated: //Authentication was successful already
+                    //But don't trust this blindly, because Context comes from the hidden input field in browser, perform the check again (and compare access token)
+                    /*
+                    //TODO At least, check that user cannot forge Context, better perform check again 
                     acc_state = AccessState.Allowed;
                     break; 
+                    */
                 case AuthState.ProcessingTerminated: //Safeguard agaist processing already terminated request
                 default: //Authentication was pending last time
                     //Get required infomation to check/cancel database record
@@ -142,6 +150,14 @@ namespace ManualMF
                             acc_state = acc_state_reason.State;
                             deny_reason = acc_state_reason.Reason;
                             token = acc_state_reason.Token;
+                            //Check access token
+                            int? saved_token = (int?)Context.Data[TOKEN];
+                            if (token!=null && !token.Equals(saved_token))
+                            {
+                                //Deny access if check failed
+                                acc_state = AccessState.Denied;
+                                deny_reason = AccessDeniedReason.InvalidToken;
+                            }
                         }
                         conn.Close();
                     }

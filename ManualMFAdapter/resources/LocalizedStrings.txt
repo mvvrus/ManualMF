@@ -1,29 +1,43 @@
-#Text for CheckButton in NormalForm
+#Text for the CheckButton in the NormalForm
 CheckButtonText = Check
-#Text for CancelButton 
+#Text for the CancelButton 
 CancelButtonText = Cancel
-#Text in NormalForm main part
-NormalFormDescriptionText = Call an operator and ask him/her to approve your access request
-#Text in WaitMoreForm main part
-WaitMoreFormDescriptionText = Your request is waiting for an operator's decision
-#Text for NormalForm/WaitMoreForm describing Check button
-CheckAboutText = Click "Check" button to check approvement of your request
-#Text for NormalForm/WaitMoreForm describing Cancel button
-CancelAboutText = Click "Cancel" button to terminate your request
+#Text in the description text field of the NormalForm 
+NormalFormDescriptionText = Call an operator and ask him/her to approve your access request.
+#Text in the description text field of the WaitMoreForm
+WaitMoreFormDescriptionText = Your request is waiting for an operator's decision.
+#Text for the NormalForm/WaitMoreForm describing the Check button
+CheckAboutText = Click "Check" to check approvement of your request.
+#Text for the NormalForm/WaitMoreForm describing the Cancel button
+CancelAboutText = Click "Cancel" to terminate your request.
 
-#Text in AlreadyAuthForm main part
+#Text in the description text field of the AlreadyAuthForm
 AlreadyAuthFormDescriptionText = You access has been granted already
-#Text describing Continue button
+#Text describing the Continue button
 ContinueAboutText = Click "Continue" to proceed
 #Text for ContinueButton 
 ContinueButtonText = Continue  
 
-#Text in DeniedForm first paragraph
+#Text in the DeniedForm first paragraph
 DeniedFormStartText = Access denied.
-#Text in DeniedForm third paragraph
-DeniedFormRepeatText =
-#Text Describing Continue button in DeniedForm
-ContinueToCloseAboutText =
+#Text in the DeniedForm third paragraph
+DeniedFormRepeatText = To make a new access request type an address of the resource you want to access into the address bar of your browser and pass your credentials check once again.
+#Text describing Continue button in DeniedForm
+ContinueToCloseAboutText = Click "Continue" to close this tab or entire browser window.
 
+##Texts for deinial reasons in the DeniedForm (the second paragraph)
+#Denied by operator
+DeniedByOperator = Your request was rejected by an operator. If you think that it was a mistake, call operator, ask him/her to clear the request record and then perform a new access request.
+#Allowed from different IP only
+DeniedByIP = Your request has been approved, but only from Internet (IP) address, which differs from your current address. You should repeat your access request.
+#Request approvement timed out
+DeniedByTimeOut = Your request has been timed out. You may repeat your access request if you wish.
+#Request record in DB was deleted
+RecordDisappeared = Cannot proceed with your access request because the request record was deleted by operator or due to program error. You should repeat your access request.
+#Access token from request differs the one from the database
+InvalidToken = Request data inconsistency detected.
 
-
+#Text in the description text field of the ErrorForm
+ErrorFormDescriptionText = Error occured
+#Text describing Continue button in DeniedForm/FinalCloseForm
+CloseAboutText = Authentication request processing terminated. Enter any other site address in the address bar or close this tab or entire browser window.

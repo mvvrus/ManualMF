@@ -1,29 +1,44 @@
-﻿#Text for CheckButton in NormalForm
+﻿#Надпись на CheckButton в NormalForm
 CheckButtonText = Проверить
-#Text for CancelButton 
+#Надпись на CancelButton 
 CancelButtonText = Отмена
-#Text in NormalForm main part
+#Текст описания в NormalForm
 NormalFormDescriptionText = Для предоставления доступа свяжитесь с оператором и попросите продтвердить ваш запрос.
-#Text in RetryForm main part
-WaitMoreFormDescriptionText = Your request is waiting for an operator's decision
-#Text for NormalForm/WaitMoreForm describing Check button
+#Текст описания в RetryForm
+WaitMoreFormDescriptionText = Ваш запрос ожидает решения оператора.
+#Текст описания в NormalForm/WaitMoreForm для кнопки CheckButton
 CheckAboutText = Нажмите кнопку "Проверить" чтобы проверить, подтвержден ли ваш запрос.
-#Text for NormalForm/WaitMoreForm describing Cancel button
-CancelAboutText = Нажмите кнопку "Отмена", чтобы отменить запрос.
+#Текст описания в NormalForm/WaitMoreForm для кнопки CancelButton
+CancelAboutText = Нажмите "Отмена", чтобы отменить запрос.
 
-#Text in AlreadyAuthForm main part
+#Текст описания в AlreadyAuthForm
 AlreadyAuthFormDescriptionText = Доступ уже был подтвержден ранее.
-#Text describing Continue button
-ContinueAboutText = Нажмите кнопку "Продолжить" для продолжения.
-#Text for ContinueButton 
+#Текст описания ContinueButton в AlreadyAuthForm
+ContinueAboutText = Нажмите "Продолжить" для продолжения.
+#Надпись на ContinueButton 
 ContinueButtonText = Продолжить  
 
-#Text in DeniedForm first paragraph
+#Первый абзац DeniedForm 
 DeniedFormStartText = Доступ запрещен. 
-#Text in DeniedForm third paragraph
+#Третий абзац DeniedForm
 DeniedFormRepeatText = Для повторного запроса доступа введите адрес, куда вам необходим доступ, в адресной строке браузера и заново пройдите проверку учетных данных.
-#Text Describing Continue button in DeniedForm
-ContinueToCloseAboutText = Нажмите кнопку Продолжить для закрытия этой вкладки или окна.
+#Текст описания ContinueButton в DeniedForm
+ContinueToCloseAboutText = Нажмите "Продолжить" для закрытия этой вкладки или окна.
 
+## Тексты описания причин запрета и предлагаемых действий (второй абзац DeniedForm)
+#Запрещено оператором
+DeniedByOperator = Ваш запрос на доступ был отклонен оператором. Если вы считаете, что это было сделан ошибочно, то свяжитесь с оператором, попросите его удалить запрещенный запрос и сделайте повторный запрос.
+#Разрешено только с другого IP
+DeniedByIP = Доступ для вас был разрешен оператором, но только с другого адреса в Интернете(IP-адреса), не совпадающего с текущим. Вам следует повторить запрос на доступ.
+#Время ожидания истекло
+DeniedByTimeOut = Время ожидания подтверждения от оператора истекло. При желании вы можете повторите запрос на доступ.
+#Запись запроса была удалена
+RecordDisappeared = Невозможно продолжить проверку доступа. Либо ваш запрос доступа был удален оператором, либо произошла ошибка. Вам следует повторить запрос на доступ.
+#Несовпадение аутентификатора запроса с содержащимся в БД
+InvalidToken = Обнаружено нарушение целостности данных в запросе.
 
+#Текст описания в ErrorForm
+ErrorFormDescriptionText = Произошла ошибка
+#Текст описания ContinueButton в ErrorForm/FinalCloseForm
+CloseAboutText = Обработка запроса на аутентификацию прекращена. Введите в адресной строке адрес любого другого сайта или закройте эту вкладку или окно.
 

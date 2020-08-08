@@ -3,7 +3,7 @@
 namespace ManualMF
 {
     internal enum AccessState : byte { Pending = 0, Allowed = 1, Denied = 2 };
-    internal enum AccessDeniedReason : byte { UnknownOrNotDenied=0, DeniedByOperator, DeniedByIP, DeniedByTimeOut, RecordDisappeared }
+    internal enum AccessDeniedReason : byte { UnknownOrNotDenied=0, DeniedByOperator, DeniedByIP, DeniedByTimeOut, RecordDisappeared, InvalidToken }
     internal struct AccessStateAndReason
     {
         public AccessState State;
