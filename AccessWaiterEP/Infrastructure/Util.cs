@@ -43,7 +43,7 @@ namespace AccessWaiterEP.Infrastructure
             return result;
         }
 
-        public static IdAndTheRest ExtractInstanceId(HttpRequest request)
+        public static IdAndTheRest ExtractInstanceId(HttpRequestBase request)
         {
             // Json pattern for the request: {"instance_id":<id>,...}
             StreamReader rdr = new StreamReader(request.InputStream, request.ContentEncoding);

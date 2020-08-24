@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="APIHandler.cs" />
     <Compile Include="AppClass.cs" />
+    <Compile Include="RouteHandler.cs" />
     <Compile Include="Infrastructure\IAppInstance.cs" />
     <Compile Include="Infrastructure\IRouter.cs" />
     <Compile Include="LocalRouter.cs" />
@@ -98,7 +99,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>1050</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:1034/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
