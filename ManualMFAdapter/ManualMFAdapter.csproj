@@ -54,6 +54,9 @@
     <Compile Include="AccessValidator.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="HtmlFragmentSupplier.cs" />
+    <Compile Include="HttpListenerRequestParams.cs" />
+    <Compile Include="IHttpRequestParams.cs" />
+    <Compile Include="IAuthenticationAdapterExtension.cs" />
     <Compile Include="ManualMFAdapter.cs" />
     <Compile Include="ManualMFMetadata.cs" />
     <Compile Include="ManualMFPresentation.cs" />

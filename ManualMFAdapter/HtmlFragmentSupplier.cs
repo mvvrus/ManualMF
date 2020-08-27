@@ -10,10 +10,18 @@ using System.Text.RegularExpressions;
 
 namespace ManualMF
 {
-    public enum FormMode { NormalForm, WaitMoreForm, AlreadyAuthForm, DeniedForm, ErrorForm, FinalClose };
+    public enum FormMode { NormalForm, WaitMoreForm, AlreadyAuthForm, DeniedForm, ErrorForm, FinalCloseForm };
 
     //This class is used as a source of localized HTML fragments, returned by ManualMFPresentation instances
     //For each locale a single instance of this class is created
+    static public class PublicStrings
+    {
+        public static String CancelButtonName { get { return HtmlFragmentSupplier.CancelButtonName; } }
+        public static String FinalCloseFragment(int Lcid) {
+            HtmlFragmentSupplier temp_supplier = HtmlFragmentSupplier.GetFragmentSupplier(Lcid);
+            return temp_supplier.GetFragment(FormMode.FinalCloseForm);
+        }
+    }
 
     class HtmlFragmentSupplier
     {
@@ -54,7 +62,7 @@ namespace ManualMF
         }
 
         //Name of Cancel button (from resources)
-        static public String CancelButtonName { get { return s_Fragments[CANCELBUTTON]; } }
+        static internal String CancelButtonName { get { return s_Fragments[CANCELBUTTON]; } }
 
         NameValueCollection m_LocalizedStrings;
 
@@ -115,7 +123,8 @@ namespace ManualMF
             SubstituteVars(html_under_construction, "[#", "]", m_LocalizedStrings); //Subtitute localized strings in the fragemnt, if any exists
             String result = html_under_construction.ToString();
             //Show reason why the access is denied (if field for it is defined in the template)
-            result = new Regex("#DenyReason#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, deny_reason);
+            if (deny_reason!=null)
+                result = new Regex("#DenyReason#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, deny_reason);
             //Insert ErrorMessage if any
             if (ErrorMessage != null)
                 result=new Regex("#ErrorMessage#", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Replace(result, ErrorMessage);

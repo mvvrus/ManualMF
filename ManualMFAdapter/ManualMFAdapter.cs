@@ -16,7 +16,7 @@ namespace ManualMF
         internal const int ProcessingTerminated = 3;
     };
 
-    public class ManualMFAdapter: IAuthenticationAdapter
+    public class ManualMFAdapter : IAuthenticationAdapter, IAuthenticationAdapterExtension
     {
         //Context propertiy names for IAuthenticationContext.Dictionary
         //UPN - User's principal name from first stage (via claim)
@@ -40,13 +40,13 @@ namespace ManualMF
         }
 
         //Exctract original client IP address from an HTTP request
-        IPAddress ExtractOriginalIP(HttpListenerRequest Request)
+        IPAddress ExtractOriginalIP(IHttpRequestParams Request)
         {
             // Return value from X-MS-Forwarded-Client-IP header (proxy connection)  or request.RemoteEndPoint.Address value (direct connection)
             //See if X-MS-Forwarded-Client-IP header present and get its value
             String[] OriginalIPs = Request.Headers.GetValues("X-MS-Forwarded-Client-IP");
             if (null == OriginalIPs || 0==OriginalIPs.Length) //Direct connection
-                return Request.RemoteEndPoint.Address;
+                return Request.RemoteAddress;
             else //Connection via Web Application Proxy
                 return IPAddress.Parse(OriginalIPs[0]);
         }
@@ -61,6 +61,12 @@ namespace ManualMF
         }
 
         public IAdapterPresentation BeginAuthentication(Claim IdentityClaim, HttpListenerRequest Request, IAuthenticationContext Context)
+        {
+            return BeginAuthentication(IdentityClaim, new HttpListenerRequestParams(Request), Context);
+        }
+        
+        public IAdapterPresentation BeginAuthentication(Claim IdentityClaim, IHttpRequestParams Request, IAuthenticationContext Context)
+
         {
             //Perform context initialization
             IPAddress access_from = ExtractOriginalIP(Request);
@@ -104,6 +110,11 @@ namespace ManualMF
 
         public IAdapterPresentation TryEndAuthentication(IAuthenticationContext Context, IProofData ProofData, HttpListenerRequest Request, out Claim[] Claims)
         {
+            return TryEndAuthentication(Context, ProofData, new HttpListenerRequestParams(Request), out Claims);
+        }
+
+        public IAdapterPresentation TryEndAuthentication(IAuthenticationContext Context, IProofData ProofData, IHttpRequestParams Request, out Claim[] Claims)
+        {
             Claims = null;
             AccessState acc_state;
             AccessDeniedReason deny_reason=AccessDeniedReason.UnknownOrNotDenied;
@@ -137,7 +148,7 @@ namespace ManualMF
                     if (AuthState.ProcessingTerminated == auth_state ) 
                     {   //If so, leave the authentication pipeline 
                         ClearContext(Context); //Dispose all context objects
-                        return new ManualMFPresentation(FormMode.FinalClose); //show them the form, from which they never return to the pipeline
+                        return new ManualMFPresentation(FormMode.FinalCloseForm); //show them the form, from which they never return to the pipeline
                     }
                     //If we are here we must check authentication in the database
                     //Check current permission state in the database
@@ -185,6 +196,12 @@ namespace ManualMF
 
         public IAdapterPresentation OnError(HttpListenerRequest request, ExternalAuthenticationException ex)
         {
+            return OnError(new HttpListenerRequestParams(request),ex);
+        }
+
+
+        public IAdapterPresentation OnError(IHttpRequestParams request, ExternalAuthenticationException ex)
+        {
             //Just retturn presentation object, that creates HTML fragment for error message
             return new ManualMFPresentation(ex.Message);
         }
@@ -196,7 +213,8 @@ namespace ManualMF
 
         public void OnAuthenticationPipelineLoad(IAuthenticationMethodConfigData configData)
         {
-            //TODO Implement configuration data initialization 
+            //Implement configuration data initialization 
+            if (configData.Data != null) Configuration.ReadConfiguration(configData.Data);
         }
 
         public void OnAuthenticationPipelineUnload()
