@@ -42,17 +42,17 @@ namespace AccessWaiterEP
                         throw new ArgumentException("No application with this instance_id.");
                     }
                     String result_json;
-                    Task<String> result = app_instance.DispatchAsync(req_data.Rest);
+                    Task<String> result_task = app_instance.DispatchAsync(req_data.Rest);
 
                     try
                     {
-                        if (no_inst_id && !result.IsCompleted)
+                        if (no_inst_id && !result_task.IsCompleted)
                         {
                             //No instance_id was set in the request and the client should wait more (via call retry)
                             //Return retry response with generated InstanceID to the client to be used in a callretry
                             JavaScriptSerializer jss = new JavaScriptSerializer();
                             context.Response.Write(jss.Serialize(new RetryReturn(instance_id)));
-                            app_instance.Abandon(result); //Tell the application instance that our resulting task has become orphaned
+                            app_instance.Abandon(result_task); //Tell the application instance that our resulting task has become orphaned
                             return;
                         }
 
@@ -60,16 +60,16 @@ namespace AccessWaiterEP
                     }
                     catch (Exception)
                     {
-                        app_instance.Abandon(result); //Tell the application instance that our resulting task has become orphaned
+                        app_instance.Abandon(result_task); //Tell the application instance that our resulting task has become orphaned
                         throw;
                     }
                     //Wait for completion and return response from call to the client 
-                    result_json = await result;
+                    result_json = await result_task;
 
                     //Convert null response to an empty one
                     if (null == result_json) result_json = "{}";
                     //Inject response_type field value for normal return
-                    JsonSurgery.InjectField(result_json, "response_type", "0");
+                    result_json=JsonSurgery.InjectField(result_json, "response_type", "0");
                     //Inject instance_id field value
                     result_json = JsonSurgery.InjectField(result_json, "instance_id", instance_id.ToString());
                     context.Response.Write(result_json);

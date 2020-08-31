@@ -24,7 +24,7 @@ namespace AccessWaiterEP
         }
 
         int m_Key;
-        IAppInstanceFactory m_Factory;
+        volatile IAppInstanceFactory m_Factory=null;
         volatile Task<Boolean> m_WaitTask = null;
         volatile CancellationTokenSource m_WaitCts = null;
         Object m_WaitLock = new Object();
@@ -63,16 +63,15 @@ namespace AccessWaiterEP
             lock (m_WaitLock)
             {
                 CancellationTokenSource ct = m_WaitCts;
-                Task<Boolean> t = m_WaitTask;
+                Task t = m_WaitTask;
                 m_WaitTask = null;
-                if (t != null) t.Dispose();
+                if (t != null && t.IsCompleted) t.Dispose();
                 m_WaitCts = null;
                 if (ct != null) ct.Dispose();
                 #pragma warning disable 0420 //Supress excessive warnings about volatile field used in Interlocked method
-                m_Outstanding = null;
                 OutstandingTaskInfo outstanding = Interlocked.Exchange<OutstandingTaskInfo>(ref m_Outstanding, null);
                 #pragma warning restore 0420 //Restore supressed warning
-                if (outstanding.Task != null && !outstanding.Task.IsCompleted) outstanding.CTSource.Cancel();
+                if (outstanding!=null && outstanding.Task != null && !outstanding.Task.IsCompleted) outstanding.CTSource.Cancel();
                 m_OutstandingTaskCount = 0;
             }
         }
@@ -81,9 +80,10 @@ namespace AccessWaiterEP
         internal string EndWaitForChangeFunction(Task<bool> AntecendentTask,Object State)
         {
             //Fast return if this task was abandoned (canceled)
-            CancellationToken ct;
-            if (State is CancellationToken) ct.ThrowIfCancellationRequested();
+            OutstandingTaskInfo outstanding = State as OutstandingTaskInfo;
+            if (outstanding != null) outstanding.CTSource.Token.ThrowIfCancellationRequested();
             else throw new ArgumentException();
+            Abandon(outstanding.Task,false);
             return MakeResult(AntecendentTask);
         }
 
@@ -104,15 +104,19 @@ namespace AccessWaiterEP
         }
 
         //Action for the task to be performed after the timeout for the reconnect (new WaitForAccessChange call after previous Abandon call)
-        //The action is to cancel wait task
+        //The action is to cancel wait task and remove this object from the list of application instaces
         internal void TimeoutAction(Task NotUsed, Object Cts)
         {
-            lock (m_WaitLock) //Because this task is not counted as an outstanding task
+            //Cancel wait task
+            lock (m_WaitLock) //Should protect from race because this task is not counted as an outstanding task
             {
                 if (!m_Disposed && m_WaitCts!=null && m_WaitCts == Cts) m_WaitCts.Cancel();
             }
-            if(m_Factory!=null) m_Factory.Release(this);
-            m_Factory = null;
+            //remove this object from the list of application instaces (effectively disposing the object) in a thread-safe manner
+            #pragma warning disable 0420 //Supress excessive warnings about volatile field used in Interlocked method
+            IAppInstanceFactory factory = Interlocked.Exchange <IAppInstanceFactory>(ref m_Factory,null); 
+            if (factory != null) factory.Release(this);
+            #pragma warning restore 0420 //Restore supressed warning
         }
 
         Task<String> WaitForAccessChange(WaitTaskParams Params)
@@ -155,7 +159,7 @@ namespace AccessWaiterEP
                 //Prepare info for the outstanding task (resulting task to be created)
                 new_outstanding.CTSource = new CancellationTokenSource(); //Create source for new resulting task cancellation token
                 //Create new resulting task
-                new_outstanding.Task = result = m_WaitTask.ContinueWith<String>(EndWaitForChangeFunction, new_outstanding.CTSource.Token,
+                new_outstanding.Task = result = m_WaitTask.ContinueWith<String>(EndWaitForChangeFunction, new_outstanding,
                     new_outstanding.CTSource.Token, TaskContinuationOptions.NotOnCanceled, TaskScheduler.FromCurrentSynchronizationContext());
                 //Add the task for wait task cleanup
                 result.ContinueWith(CheckForWaitTaskCleanupAction);
@@ -174,16 +178,22 @@ namespace AccessWaiterEP
             return result;
         }
 
+        public void Abandon(Task OutstandingTask)
+        {
+            Abandon(OutstandingTask,true);
+        }
         //See if the current resulting task is the one passed as a parameter
-        //If so - cancel it and clear reference to it
+        //If so - cancel it (if ShouldCancel specified) and clear reference to it
+        //Add reconnect wait task instead (to remove this object from router list after timeout, if no reconnect)
         //The code is written as non-blocking thread-safe style using Interlocked class methods
         //because of the possible concurency with execution of WaitForChnage method in another thread
         //So it is rather tricky
-        public void Abandon(Task OutstandingTask)
+        public void Abandon(Task OutstandingTask, Boolean ShouldCancel)
         {
             if(m_Disposed) throw new ObjectDisposedException(this.GetType().FullName);
+            if (null == OutstandingTask) return; //Nothing to abandon
             #pragma warning disable 0420 //Supress excessive warnings about volatile field used in Interlocked method
-            //Artifically increment temporarily outstanding task count to deffer wait task cleanup until we done
+            //Artifically increment temporarily outstanding task count to defer wait task cleanup until we done
             Interlocked.Increment(ref m_OutstandingTaskCount);
             try 
 	        {	        
@@ -208,8 +218,8 @@ namespace AccessWaiterEP
                     //...and does it contains reference to the requested task?
                     if (last_outstanding.Task == OutstandingTask)
                     {
-                        //if so - Cancel the task and leave recconnect task in place
-                        last_outstanding.CTSource.Cancel();
+                        //if so - Cancel the task if not completed yet and leave reconnect wait task in place
+                        if (!OutstandingTask.IsCompleted && ShouldCancel) last_outstanding.CTSource.Cancel();
                     }
                     else //Info references another task, so the requested task was cancelled already
                     {
@@ -255,7 +265,11 @@ namespace AccessWaiterEP
                     case CANCEL_COMMAND:
                         CancellationTokenSource cts = m_WaitCts;
                         if (!m_Disposed && cts!=null) cts.Cancel();
-                        m_Factory.Release(this);
+                        //remove this object from the list of application instaces (effectively disposing the object) in a thread-safe manner
+                        #pragma warning disable 0420 //Supress excessive warnings about volatile field used in Interlocked method
+                        IAppInstanceFactory factory = Interlocked.Exchange<IAppInstanceFactory>(ref m_Factory, null);
+                        if (factory != null) factory.Release(this);
+                        #pragma warning restore 0420 //Restore supressed warning
                         return Task<String>.FromResult("{}");
                     case ABANDON_COMMAND:
                         Task task_to_abandon = outstanding != null ? outstanding.Task : null;
@@ -287,5 +301,6 @@ namespace AccessWaiterEP
         }
 
         public int Key { get { return m_Key; } }
+
     }
 }

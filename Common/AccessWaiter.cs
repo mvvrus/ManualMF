@@ -132,7 +132,7 @@ namespace ManualMF
                 SqlDependency dep = new SqlDependency(rdcmd, null, timeout);
                 dep.OnChange += (sender, e) => tcs.TrySetResult(e);
 
-                SqlDataReader rdr = await rdcmd.ExecuteReaderAsync(Ct);
+                SqlDataReader rdr = await rdcmd.ExecuteReaderAsync(Ct).ConfigureAwait(false);
                 try
                 {
                     if (rdr.HasRows)
@@ -161,7 +161,9 @@ namespace ManualMF
                 if (EndWaitReason.NoEndWait == ewr)
                 {
                     CancellationTokenRegistration? ctr=null;
-                    if (Ct != CancellationToken.None)  ctr = Ct.Register( ()=>tcs.TrySetCanceled() );
+                    if (Ct != CancellationToken.None)  ctr = Ct.Register( 
+                        ()=>tcs.TrySetCanceled() 
+                        );
                     try
                     {
                         changeArgs = await tcs.Task;
