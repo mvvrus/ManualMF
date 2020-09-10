@@ -42,3 +42,11 @@ ErrorFormDescriptionText = Произошла ошибка
 #Текст описания ContinueButton в ErrorForm/FinalCloseForm
 CloseAboutText = Обработка запроса на аутентификацию прекращена. Введите в адресной строке адрес любого другого сайта или закройте эту вкладку или окно.
 
+#Сообщения API онлайнового ожидания
+Checking = Выполняется проверка	
+Stopped = Проверка остановлена
+Answered = Ответ получен
+CannotCheck = Проверка невозможна
+Terminated = Прекращено
+PerformCheck = Выполнить онлайн-проверку
+NotRunning = Проверка не выполнятеся

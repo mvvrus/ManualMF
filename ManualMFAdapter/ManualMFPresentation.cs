@@ -16,16 +16,17 @@ namespace ManualMF
         AccessDeniedReason m_Reason;
         String m_ErrorMessage;
         int? m_EPAccessToken;
+        String m_Upn="";
         //Normal form - ask the user to inform an operator and wait for a decision
         public ManualMFPresentation(FormMode aFormMode) { m_FormMode = aFormMode;}
-        public ManualMFPresentation(FormMode aFormMode, int? EPAccessToken) { m_FormMode = aFormMode; m_EPAccessToken = EPAccessToken;}
+        public ManualMFPresentation(FormMode aFormMode, int? EPAccessToken, String Upn) { m_FormMode = aFormMode; m_EPAccessToken = EPAccessToken; m_Upn = Upn; }
         public ManualMFPresentation(AccessDeniedReason Reason) { m_FormMode = FormMode.DeniedForm; m_Reason = Reason; }
         public ManualMFPresentation(string ErrorMessage) { m_FormMode = FormMode.ErrorForm; m_ErrorMessage = ErrorMessage; }
 
         //Returns an input form part of the authetication page
         public string GetFormHtml(int lcid)
         {
-            HtmlFragmentSupplier supplier = HtmlFragmentSupplier.GetFragmentSupplier(lcid);
+            HtmlFragmentSupplier supplier = HtmlFragmentSupplier.GetFragmentSupplier(lcid,m_Upn);
             switch (m_FormMode)
             {
                 case FormMode.DeniedForm:

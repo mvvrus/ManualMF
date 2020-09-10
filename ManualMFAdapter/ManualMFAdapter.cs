@@ -100,7 +100,7 @@ namespace ManualMF
                 case AccessState.Pending:
                     //Handle request that was just made or not processed by operator yet
                     Context.Data[STATE] = AuthState.AuthPending;
-                    return new ManualMFPresentation(FormMode.NormalForm,token);
+                    return new ManualMFPresentation(FormMode.NormalForm, token, upn);
                 default:
                     //Something went wrong, or else we never get here
                     throw new Exception("Invalid request state from the database:"); //TODO - insert auth_state value into the message
@@ -119,6 +119,7 @@ namespace ManualMF
             AccessState acc_state;
             AccessDeniedReason deny_reason=AccessDeniedReason.UnknownOrNotDenied;
             int auth_state = (int)Context.Data[STATE];
+            String upn = (String)Context.Data[UPN];
             int? token = null;
             switch (auth_state) {
                 case AuthState.AlreadyAuthenticated: //Authentication was successful already
@@ -132,7 +133,6 @@ namespace ManualMF
                 default: //Authentication was pending last time
                     //Get required infomation to check/cancel database record
                     IPAddress access_from = ExtractOriginalIP(Request);
-                    String upn = (String)Context.Data[UPN];
                     if (ProofData.Properties.ContainsKey(HtmlFragmentSupplier.CancelButtonName))
                     {
                         //Cancel request: clear request record wich was cancelled while pending
@@ -178,7 +178,7 @@ namespace ManualMF
             switch (acc_state)
             {
                 case AccessState.Pending: //Tell them that they should wait more
-                    return new ManualMFPresentation(FormMode.WaitMoreForm, token);
+                    return new ManualMFPresentation(FormMode.WaitMoreForm, token, upn);
                 case AccessState.Denied: //Found that authentication was denied
                     Context.Data[STATE] = AuthState.ProcessingTerminated; //Set authentication state to get out of the pipeline next time we return to this method
                     return new ManualMFPresentation(deny_reason); //Notify user that his access was denied and why

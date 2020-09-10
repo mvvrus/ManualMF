@@ -71,6 +71,12 @@
     <EmbeddedResource Include="LocalizedStrings.resx" />
     <EmbeddedResource Include="LocalizedStrings.ru.resx" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="resources\HTMLFragments.txt" />
+    <Content Include="resources\LocalizedStrings.ru.txt" />
+    <Content Include="resources\LocalizedStrings.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>

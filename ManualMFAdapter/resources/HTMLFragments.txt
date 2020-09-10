@@ -1,7 +1,26 @@
 #Hidden controls required to be present in the the authorization form fragment 
 REQUIRED_HIDDEN = <input id="authMethod" type="hidden" name="AuthMethod" value="%AuthMethod%"> <input id="context" type="hidden" name="Context" value="%Context%">
 CancelButton = cancelButton
-EPAccessToken = <input id="EPAccessToken" type="hidden" name="EPAccessToken" value="#EPAccessToken#">
+EPAccessToken = <input id="EPAccessToken" type="hidden" name="EPAccessToken" value="#EPAccessToken#"><div class="groupMargin">[!WaitBlock]</div>
+
+#JavaScript functions for online checking
+JSVars = var notification, timer, btn, instance_id=0, progressArea, waiting, request = new XMLHttpRequest();
+cancelRequest = function cancelRequest(){if(request.readyState!=0 && request.readyState!=4 ) {request.onreadystatechange = undefined;request.abort();}}
+sendRequest = function sendRequest (jsonString, callback) {cancelRequest();request.open("POST","/api/AccessWaiterEP");request.onreadystatechange = callback;request.setRequestHeader("content-type","application/json");request.send(jsonString);}
+onWindowLoad = function onWindowLoad () {notification = document.getElementById("notification");progressArea = document.getElementById("progressArea");notification.innerText = "[#NotRunning]";btn = document.getElementById("checkWaitButton");btn.onclick = processCheck;waiting = btn.checked;window.addEventListener("beforeunload", terminateAll);}
+processCheck = function processCheck() {if(waiting!=this.checked) {if(this.checked) startWait();else stopWait();}waiting=this.checked;}
+markProgress = function markProgress() {str=progressArea.innerText;if (str.length > 29) str="";progressArea.innerText = str+'.';timer=setTimeout(markProgress,1000);}
+startProgress = function startProgress() {notification.innerText="[#Checking]";progressArea.innerText = "";if(timer!= undefined) clearTimeout(timer);timer=setTimeout(markProgress,1000);}
+endProgress =   function endProgress() {if(timer!= undefined) clearTimeout(timer);timer = undefined;notification.innerText="[#Stopped]";progressArea.innerText = "";}
+afterWait = function afterWait() {document.getElementById('submitButton').click(); }
+rsChange =  function rsChange() {if (4==request.readyState) {if(200==request.status) {r = JSON.parse(request.responseText);instance_id = r.instance_id;switch(r.response_type) {case 0:if(waiting) {msg="[#Answered]";btn.disabled=true;setTimeout(afterWait,500);} else msg="[#Stopped]";break;case 1: continueWait();return;case 2: default: msg="[#CannotCheck]";btn.disabled=true;break;}endProgress();notification.innerText = msg;}else {endProgress();notification.innerText = "[#CannotCheck]";btn.checked=false;btn.disabled=true;}}}
+continueWait = function continueWait() {o ={};o.instance_id=instance_id;o.method_code=1;o.Upn="#Upn#";o.AccessToken=#EPAccessToken#;sendRequest(JSON.stringify(o),rsChange);}
+startWait = function startWait() {startProgress();continueWait();}
+stopWait = function stopWait() {servieCommand(-1,rsChange);}
+servieCommand = function servieCommand(cmd,callback){o={};o.instance_id=instance_id;o.method_code=cmd;sendRequest(JSON.stringify(o),callback);}
+terminateAll = function terminateAll() {if(0==instance_id) return; if(waiting) endProgress();btn.disabled=true;notification.innerText ="[#Terminated]"; servieCommand(-2);}
+WaitBlock = \n<script>\n[!JSVars]\n[!cancelRequest]\n[!sendRequest]\n[!onWindowLoad]\n[!processCheck]\n[!markProgress]\n[!startProgress]\n[!endProgress]\n[!afterWait]\n[!rsChange]\n[!continueWait]\n[!startWait]\n[!stopWait]\n[!servieCommand]\n[!terminateAll]\n window.addEventListener("load", onWindowLoad);\n</script>\n<label><input type="checkbox" id="checkWaitButton">[#PerformCheck]</label>\n<div><span id="notification" >placeholder</span><span id="progressArea"></span></div>
+#WaitBlock = <a href="/WaitTest/#EPAccessToken#">Wait test</a>
 
 #
 NormalForm = <div class="groupMargin">[#NormalFormDescriptionText]<br/>[#CheckAboutText]<br/>[#CancelAboutText]</div><div class="submitMargin"><form method="post" id="authForm">[!REQUIRED_HIDDEN][!EPAccessToken]<input id="submitButton" type="submit" name="Check" value="[#CheckButtonText]"><input id="cancelButton" type="submit" name="[!CancelButton]" value="[#CancelButtonText]"></form></div>

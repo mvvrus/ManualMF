@@ -41,3 +41,13 @@ InvalidToken = Request data inconsistency detected.
 ErrorFormDescriptionText = Error occured
 #Text describing Continue button in DeniedForm/FinalCloseForm
 CloseAboutText = Authentication request processing terminated. Enter any other site address in the address bar or close this tab or entire browser window.
+
+#Messages for online wait API
+Checking = Checking
+Stopped = Stopped
+Answered = Answered
+CannotCheck = Checking impossible
+Terminated = Terminated
+PerformCheck = Perform online checking
+NotRunning = No check yet
+
