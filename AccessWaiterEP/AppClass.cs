@@ -12,7 +12,7 @@ namespace AccessWaiterEP
 {
     class AppClass: IAppInstance,IDisposable
     {
-        const int RECONNECT_TIMEOUT = 300000;
+        const int RECONNECT_TIMEOUT = 1800000;
 
         const int CANCEL_COMMAND = -2;
         const int ABANDON_COMMAND = -1;

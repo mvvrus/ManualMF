@@ -57,6 +57,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +69,9 @@
     </Compile>
     <Compile Include="APIHandler.cs" />
     <Compile Include="AppClass.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="RouteHandler.cs" />
     <Compile Include="Infrastructure\IAppInstance.cs" />
     <Compile Include="Infrastructure\IRouter.cs" />
@@ -101,7 +105,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1050</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:1034/</IISUrl>
+          <IISUrl>http://localhost:1034/API/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
