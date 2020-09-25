@@ -1,0 +1,25 @@
+﻿@using ManMFOperator.Models
+@model HomeIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<div>
+<table>
+    <thead><tr><th>Fullname</th><th>Department</th><th>Upn </th><th>State</th><th>ValidUntil</th><th>IPAddress</th></tr></thead>
+    <tbody>
+    @{
+        foreach(UserInfo user in Model.users) {
+            <tr><td>@user.Fullname</td><td>@user.Department</td><td>@user.Upn</td><td>@user.State</td><td>@user.ValidUntil</td><td>@user.IPAddress</td></tr>
+        }
+    }
+    </tbody>
+</table>
+</div>
+@using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "refresh" }))
+{
+    @Html.EditorFor(x => x.withnonpending)
+    <input type="submit" name="Update" value="Update" />
+}

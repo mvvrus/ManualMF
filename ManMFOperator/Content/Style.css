@@ -1,0 +1,26 @@
+﻿div#header {
+    background-color: #22446e;
+    height: 5%;
+}
+div#navigation {
+    background-color: #4488dd;
+    float: left;
+    min-height:95%;
+    overflow:auto;
+}
+div#content {
+    float:left;
+    border-left: 2px solid gray;
+    min-height:95%;
+}
+div.put-in {
+    padding: 1em;
+}
+body {
+    height: 100%;
+    min-height: 100%;
+    margin: 0px;
+}
+html {
+    height: 100%;
+}
