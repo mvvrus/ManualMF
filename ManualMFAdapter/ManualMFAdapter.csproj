@@ -68,8 +68,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="HTMLFragments.resx" />
-    <EmbeddedResource Include="LocalizedStrings.resx" />
-    <EmbeddedResource Include="LocalizedStrings.ru.resx" />
+    <EmbeddedResource Include="LocalizedStrings.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocalizedStrings.ru.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

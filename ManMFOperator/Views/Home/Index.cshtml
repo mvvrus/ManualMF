@@ -1,25 +1,60 @@
 ﻿@using ManMFOperator.Models
+@using ManMFOperator.Infrastructure
 @model HomeIndexViewModel
 
 @{
     ViewBag.Title = "Index";
 }
-
-<h2>Index</h2>
 <div>
-<table>
-    <thead><tr><th>Fullname</th><th>Department</th><th>Upn </th><th>State</th><th>ValidUntil</th><th>IPAddress</th></tr></thead>
+    @using (Html.BeginForm((String)ViewContext.RouteData.Values["action"], (String)ViewContext.RouteData.Values["controller"], FormMethod.Post, new { @class = "refresh" }))
+    {
+            @Html.EditorFor(x => x.withnonpending)
+            @Html.LabelFor(x => x.withnonpending)
+            <input type="submit" name="Refresh" value="@Html.LocalizedString("Refresh")" />
+    }
+    <h3>@Html.LocalizedString("UserAccessList") (@Html.LocalizedString(Model.withnonpending?"SublistAll":"SublistPending"))</h3>
+</div>
+<div style="overflow:auto">
+<table class="userlist">
+    <thead><tr>
+        <th>@Html.DisplayNameFor(x=>x.users.FirstOrDefault().Fullname)</th>
+        <th>@Html.DisplayNameFor(x=>x.users.FirstOrDefault().Department)</th>
+        <th>@Html.DisplayNameFor(x=>x.users.FirstOrDefault().Upn)</th>
+        @{ 
+            if(Model.withnonpending) {
+                <th>@Html.DisplayNameFor(x=>x.users.FirstOrDefault().State)</th>
+            }
+        }
+        <th>@Html.DisplayNameFor(x=>x.users.FirstOrDefault().ValidUntil)</th>
+        <th>@Html.DisplayNameFor(x=>x.users.FirstOrDefault().IPAddress)</th>
+    </tr></thead>
     <tbody>
     @{
         foreach(UserInfo user in Model.users) {
-            <tr><td>@user.Fullname</td><td>@user.Department</td><td>@user.Upn</td><td>@user.State</td><td>@user.ValidUntil</td><td>@user.IPAddress</td></tr>
+            <tr>
+                <td>@user.Fullname</td>
+                <td>@user.Department</td>
+                <td>@user.Upn</td>
+                @{ 
+                    if(Model.withnonpending) {
+                        <td>@Html.LocalizedString(Enum.GetName(typeof(ManualMF.AccessState),user.State))</td>
+                    }
+                }
+                <td>@user.ValidUntil</td>
+                <td>@user.IPAddress</td>
+                <td class="command">
+                @{Boolean pending = ManualMF.AccessState.Pending == user.State;}
+                @using (Html.BeginForm(pending ? "SetUserAccess" : "ClearUser", (String)ViewContext.RouteData.Values["controller"]))
+                {
+                    String ButtonName = Html.LocalizedString(pending?"Access":"Clear");
+                    <input type="hidden" name="upn" value="@user.Upn" />
+                    <input type="submit" name="Submit" value="@ButtonName" class="useraction"/>
+                }
+
+                </td>
+            </tr>
         }
     }
     </tbody>
 </table>
 </div>
-@using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "refresh" }))
-{
-    @Html.EditorFor(x => x.withnonpending)
-    <input type="submit" name="Update" value="Update" />
-}

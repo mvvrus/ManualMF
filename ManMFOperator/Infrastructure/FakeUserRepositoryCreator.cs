@@ -8,6 +8,10 @@ namespace ManMFOperator.Infrastructure
 {
     static class FakeUserRepositoryCreator
     {
-        static public IUserRepository Create() { return new FakeUserRepository(); }
+        static IUserRepository m_Repository = null;
+        static public IUserRepository Create() { 
+            if(null==m_Repository) m_Repository=new FakeUserRepository();
+            return m_Repository;
+        }
     }
 }

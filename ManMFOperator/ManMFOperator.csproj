@@ -117,14 +117,18 @@
     <Compile Include="..\ManMFOperator.Tests\FakeUserRepository.cs">
       <Link>Infrastructure\FakeUserRepository.cs</Link>
     </Compile>
+    <Compile Include="App_Start\Configuration.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\LocalizationFilter.cs" />
     <Compile Include="Infrastructure\DependencyResolverDecorator.cs" />
     <Compile Include="Infrastructure\FakeUserRepositoryCreator.cs" />
     <Compile Include="Infrastructure\IUserRepository.cs" />
+    <Compile Include="Infrastructure\Resource.cs" />
     <Compile Include="Models\HomeIndexViewModel.cs" />
+    <Compile Include="Models\UserAccessAction.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -134,6 +138,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\Style.css" />
     <Content Include="Global.asax" />
+    <Content Include="resources\UserInfoRes.ru.txt" />
+    <Content Include="resources\UserInfoRes.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -157,6 +163,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UserInfoRes.resx" />
+    <EmbeddedResource Include="UserInfoRes.ru.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\UserAccess.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -186,6 +199,9 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

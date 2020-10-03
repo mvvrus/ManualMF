@@ -1,22 +1,4 @@
-﻿div#header {
-    background-color: #22446e;
-    height: 5%;
-}
-div#navigation {
-    background-color: #4488dd;
-    float: left;
-    min-height:95%;
-    overflow:auto;
-}
-div#content {
-    float:left;
-    border-left: 2px solid gray;
-    min-height:95%;
-}
-div.put-in {
-    padding: 1em;
-}
-body {
+﻿body {
     height: 100%;
     min-height: 100%;
     margin: 0px;
@@ -24,3 +6,52 @@ body {
 html {
     height: 100%;
 }
+#header {
+    background-color: #22446e;
+    color: white;
+    font-size: large;
+    text-align: center;
+    height: 8%;
+}
+#navigation {
+    background-color: #4488dd;
+    float: left;
+    min-height:92%;
+    min-width: 20%;
+    overflow:auto;
+}
+#content {
+    float:left;
+    border-left: 2px solid gray;
+    min-height:92%;
+}
+div.put-in {
+    padding: 1em;
+}
+table.userlist {
+    border-collapse:collapse
+} 
+table.userlist td.command {
+    border: none;
+}
+table.userlist input.useraction  {
+    min-width: 80px;
+}
+
+table.userlist th, table.userlist td{
+    border: 1px solid black;
+}
+table.userlist th {
+    background-color: lightgray;
+}
+table.userlist th, table.userlist td {
+    padding: 2px;
+}
+form.refresh {
+    float: right;
+    display:inline;
+}
+input.numinput {
+    width: 4.5ch;
+}
+

@@ -1,0 +1,28 @@
+#UserInfo fields
+Fullname = Full Name
+Department = Department
+Upn = UPN
+State = State
+ValidUntil = Valid until
+IPAddress = IP Address
+
+#Data for ~/Home/Index
+withnonpending = Show all
+Refresh = Refresh
+UserAccessList = List of users access requests
+SublistPending = pending only
+SublistAll = all
+Clear = Clear
+Access = Access...
+
+#Request states (substitution is unnecessary for english names)
+#Allowed =
+#Denied =
+#Pending =
+
+#Data for ~/Home/SetUserAccess
+UserAccess = Specify access for
+actionAllow = Allow
+sameiponly = From this IP address only
+actionDeny = Deny
+actionClear = Clear request

@@ -1,0 +1,33 @@
+﻿#UserInfo fields
+Fullname = ФИО
+Department = Подразделение
+Upn = UPN
+State = Состояние
+ValidUntil = Действует до
+IPAddress = Адрес IP
+
+#Data for ~/Home/Index
+withnonpending = Показать все
+Refresh = Обновить
+UserAccessList = Список запросов на доступ
+SublistPending = только ожидающие
+SublistAll = все
+Clear = Очистить
+Access = Доступ...
+
+#Request states 
+Allowed = Разрешен
+Denied = Запрещен
+Pending = Ожидает
+
+#Data for ~/Home/SetUserAccess
+UserAccess = Укажите доступ для пользователя
+actionAllow = Разрешить
+sameiponly = только с указанного адреса IP
+actionDeny = Запретить
+actionClear = Очистить запрос
+
+
+
+
+
