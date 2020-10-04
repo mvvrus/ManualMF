@@ -26,6 +26,9 @@ actionAllow = Разрешить
 sameiponly = только с указанного адреса IP
 actionDeny = Запретить
 actionClear = Очистить запрос
+InputValidUntil = Разрешить/запретить до
+Nextday = в ближайшие сутки
+Submit = Отправить
 
 
 

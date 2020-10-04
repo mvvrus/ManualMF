@@ -26,3 +26,6 @@ actionAllow = Allow
 sameiponly = From this IP address only
 actionDeny = Deny
 actionClear = Clear request
+InputValidUntil = Allow/deny until
+Nextday = in next 24 hours
+#Submit = 

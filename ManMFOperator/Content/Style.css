@@ -28,6 +28,9 @@ html {
 div.put-in {
     padding: 1em;
 }
+h3.frameheader {
+    background-color: lightgray;
+}
 table.userlist {
     border-collapse:collapse
 } 
@@ -51,7 +54,24 @@ form.refresh {
     float: right;
     display:inline;
 }
+
+form.useraccess {
+    min-width:540px;
+}
 input.numinput {
     width: 4.5ch;
+}
+input.submitbtn {
+    margin-left:42%;
+    margin-top: 1em;
+    width:16%;
+}
+
+div.radiodelim {
+    width:95%;
+    margin-left:5%;
+}
+div.radiocommon {
+    margin-left: 5%;
 }
 

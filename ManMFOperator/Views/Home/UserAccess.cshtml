@@ -6,39 +6,64 @@
 @{
     ViewBag.Title = "UserAccess";
 }
+<script>
+    var radiobuttons, sameiponly, hours, mins,i;
+    window.addEventListener("load", onWindowLoad)
 
-<h3>@Html.LocalizedString("UserAccess") @Model.Fullname</h3>
-@using (Html.BeginForm("CompleteSetUserAccess", (String)ViewContext.RouteData.Values["controller"]))
+    function radio_click() {
+        sameiponly.disabled = !radiobuttons[0].checked;
+        hours.disabled = mins.disabled = !radiobuttons[0].checked && !radiobuttons[1].checked;
+    }
+
+    function onWindowLoad() {
+        sameiponly = document.getElementById("sameiponly")
+        hours = document.getElementById("hours")
+        mins = document.getElementById("mins")
+        radiobuttons=document.getElementsByClassName("radiobtn")
+        for (i = 0; i < radiobuttons.length; i++) {
+            radiobuttons[i].onclick = radio_click;
+        }
+    }
+</script>
+<h3 class="frameheader">@Html.LocalizedString("UserAccess") @Model.Fullname</h3>
+@using (Html.BeginForm("CompleteSetUserAccess", (String)ViewContext.RouteData.Values["controller"], FormMethod.Post, new { @class = "useraccess" }))
 {
     <input type="hidden" name="Upn" value="@Model.Upn" />
     <div class="radio">
-        <input type="radio" name="action" id="actionAllow" value="Allow" checked="checked"/>
+        <input type="radio" name="action" id="actionAllow" value="Allow" checked="checked" class="radiobtn"/>
         <label for="actionAllow">@Html.LocalizedString("actionAllow")</label>
-        @{ if(Model.IPAddress!=null) 
-            {
-                <input type="checkbox" name="sameiponly" id="sameiponly" value="true" />
-                <label for="sameiponly">@Html.LocalizedString("sameiponly") (@Model.IPAddress)</label>
-            }
+        @{ if (Model.IPAddress != null)
+           {
+               <div class="radiocommon">
+                    <input type="checkbox" name="sameiponly" id="sameiponly" value="true" />
+                    <label for="sameiponly">@Html.LocalizedString("sameiponly"): @Model.IPAddress</label>
+                </div>
+           }
         }
     </div>
+    <div class="radiodelim"><hr/></div>
     <div class="radio">
-        <input type="radio" name="action" id="actionDeny" value="Deny" />
+        <input type="radio" name="action" id="actionDeny" value="Deny"  class="radiobtn"/>
         <label for="actionDeny">@Html.LocalizedString("actionDeny")</label>
     </div>
-    <div>
+    <div class="radiodelim"><hr/></div>
+    <div class="radiocommon">
         @{
-            int hours = (DateTime.Now + Configuration.DefaultAccessDuration).Hour;
-            int mins = (DateTime.Now + Configuration.DefaultAccessDuration).Minute;
+           int hours = (DateTime.Now + Configuration.DefaultAccessDuration).Hour;
+           int mins = (DateTime.Now + Configuration.DefaultAccessDuration).Minute;
         }
         @Html.LocalizedString("InputValidUntil"): 
-        <input type="number" min="0" max="23" class="numinput" name="hours" value="@hours"/>:<input type="number" min="0" max="59" class="numinput" name="mins" value="@mins"/>
+        <input type="number" min="0" max="23" class="numinput" name="hours" id="hours" value="@hours"/>:<input type="number" min="0" max="59" class="numinput" name="mins" id="mins" value="@mins"/>
+        (@Html.LocalizedString("Nextday"))
     </div>
+    <div class="radiodelim"><hr/></div>
     <div class="radio">
-        <input type="radio" name="action" id="actionClear" value="Clear" />
+        <input type="radio" name="action" id="actionClear" value="Clear" class="radiobtn" />
         <label for="actionClear">@Html.LocalizedString("actionClear")</label>
     </div>
-    <div>
-        <input type="submit" name="Submit" value="Submit" />
+    <div class="radiodelim"><hr/></div>
+    <div class="submit">
+        <input type="submit" name="Submit" value="@Html.LocalizedString("Submit")" class="submitbtn" />
     </div>
 }
 
