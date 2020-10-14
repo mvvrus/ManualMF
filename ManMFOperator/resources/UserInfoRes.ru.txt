@@ -14,6 +14,7 @@ SublistPending = только ожидающие
 SublistAll = все
 Clear = Очистить
 Access = Доступ...
+NoData = Нет данных для отображения
 
 #Request states 
 Allowed = Разрешен

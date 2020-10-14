@@ -5,7 +5,7 @@
 @{
     ViewBag.Title = "Index";
 }
-<div>
+<div class="pretable">
     @using (Html.BeginForm((String)ViewContext.RouteData.Values["action"], (String)ViewContext.RouteData.Values["controller"], FormMethod.Post, new { @class = "refresh" }))
     {
             @Html.EditorFor(x => x.withnonpending)
@@ -14,7 +14,8 @@
     }
     <h3>@Html.LocalizedString("UserAccessList") (@Html.LocalizedString(Model.withnonpending?"SublistAll":"SublistPending"))</h3>
 </div>
-<div style="overflow:auto">
+<div class="tableroot" >
+@{ if(Model.users.Count()>0) {
 <table class="userlist">
     <thead><tr>
         <th>@Html.DisplayNameFor(x=>x.users.FirstOrDefault().Fullname)</th>
@@ -57,4 +58,12 @@
     }
     </tbody>
 </table>
+}
+else {
+<div class="nodata">
+    @Html.LocalizedString("NoData")
+</div>
+}
+}
+
 </div>

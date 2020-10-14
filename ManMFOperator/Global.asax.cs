@@ -23,7 +23,11 @@ namespace ManMFOperator
             DependencyResolver.SetResolver(new DependencyResolverDecorator(DependencyResolver.Current,
                 new DependencyResolverDecorator.TypeCreator[] { 
                     new DependencyResolverDecorator.TypeCreator {aType = typeof(HomeController), 
-                    Creator = () => new HomeController(FakeUserRepositoryCreator.Create()) }  
+                    Creator = () => new HomeController(UserRepositoryCreator.Create()) }
+                    ,new DependencyResolverDecorator.TypeCreator {aType=typeof(IDirectoryAccessor),
+                    Creator = ADCachedAccessorCreator.Create}
+                    ,new DependencyResolverDecorator.TypeCreator {aType=typeof(IDBAccessor),
+                    Creator = ()=>new DBAccessor()}
                 }
             ));
 

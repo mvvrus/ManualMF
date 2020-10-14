@@ -115,19 +115,22 @@
     <Compile Include="..\Common\AccessDefs.cs">
       <Link>AccessDefs.cs</Link>
     </Compile>
-    <Compile Include="..\ManMFOperator.Tests\FakeUserRepository.cs">
-      <Link>Infrastructure\FakeUserRepository.cs</Link>
-    </Compile>
     <Compile Include="App_Start\Configuration.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\ADCachedAccessor.cs" />
+    <Compile Include="Infrastructure\DBAccessor.cs" />
+    <Compile Include="Infrastructure\IDBAccessor.cs" />
+    <Compile Include="Infrastructure\IDirectoryAccessor.cs" />
     <Compile Include="Infrastructure\LocalizationFilter.cs" />
     <Compile Include="Infrastructure\DependencyResolverDecorator.cs" />
-    <Compile Include="Infrastructure\FakeUserRepositoryCreator.cs" />
     <Compile Include="Infrastructure\IUserRepository.cs" />
     <Compile Include="Infrastructure\Resource.cs" />
+    <Compile Include="Infrastructure\UserRepository.cs" />
+    <Compile Include="Models\DBUserInfo.cs" />
+    <Compile Include="Models\DirectoryUserInfo.cs" />
     <Compile Include="Models\HomeIndexViewModel.cs" />
     <Compile Include="Models\UserAccessAction.cs" />
     <Compile Include="Models\UserInfo.cs" />

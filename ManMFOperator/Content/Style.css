@@ -50,6 +50,10 @@ table.userlist th {
 table.userlist th, table.userlist td {
     padding: 2px;
 }
+
+div.pretable {
+    min-width:650px;
+}
 form.refresh {
     float: right;
     display:inline;
@@ -74,4 +78,5 @@ div.radiodelim {
 div.radiocommon {
     margin-left: 5%;
 }
+
 
