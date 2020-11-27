@@ -31,7 +31,8 @@ InputValidUntil = Разрешить/запретить до
 Nextday = в ближайшие сутки
 Submit = Отправить
 
-
-
+#Layout data
+UserAccessLink = Запросы на доступ
+Header = Предоставление доступа через оператора
 
 

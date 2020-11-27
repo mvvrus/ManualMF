@@ -72,7 +72,7 @@ namespace ManualMF
         }
     }
 
-    internal class AccessWaiter
+    public class AccessWaiter
     {
         public const Int32 FIRST_WAIT_TIME = 10;
         public const Int32 MAX_WAIT_TIME = 600;
@@ -84,19 +84,19 @@ namespace ManualMF
         private Int32 m_MaxWaitTime = MAX_WAIT_TIME;
 
         public AccessWaiter(SqlConnection Connection)  { m_Connection = Connection; }
-        public AccessWaiter(SqlConnection Connection, TimeSpan MaxWaitTime) 
+        public AccessWaiter(SqlConnection Connection, int MaxWaitTime) 
         { 
             m_Connection = Connection; 
-            m_MaxWaitTime = (Int32)(MaxWaitTime.TotalSeconds);
+            m_MaxWaitTime = MaxWaitTime;
             if (m_MaxWaitTime < 1) throw new ArgumentException();
         }
 
-        public AccessWaiter(SqlConnection Connection, TimeSpan MaxWaitTime, TimeSpan FirstWaitTime) 
+        public AccessWaiter(SqlConnection Connection, Int32 MaxWaitTime, Int32 FirstWaitTime) 
         { 
             m_Connection = Connection; 
-            m_MaxWaitTime = (Int32)(MaxWaitTime.TotalSeconds);
+            m_MaxWaitTime = MaxWaitTime;
             if(m_MaxWaitTime<1) throw new ArgumentException();
-            m_FirstWaitTime = (Int32)(FirstWaitTime.TotalSeconds);
+            m_FirstWaitTime = FirstWaitTime;
             if(m_FirstWaitTime<1) throw new ArgumentException();
         }
 

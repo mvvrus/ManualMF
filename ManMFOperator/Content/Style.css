@@ -9,10 +9,15 @@ html {
 #header {
     background-color: #22446e;
     color: white;
-    font-size: large;
+    font-size: x-large;
     text-align: center;
     height: 8%;
 }
+
+#headertext {
+    padding:0.5em;
+}
+
 #navigation {
     background-color: #4488dd;
     float: left;

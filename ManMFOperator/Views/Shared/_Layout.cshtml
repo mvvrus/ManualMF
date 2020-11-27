@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using ManMFOperator.Infrastructure
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -8,11 +10,13 @@
 </head>
 <body>
     <div id="header">
-        Operator-assisted authentication
+        <div id="headertext">
+        @Html.LocalizedString("Header")
+        </div>
     </div>
     <div id="navigation">
         <div class="put-in">
-            Some text
+            @Html.ActionLink(Html.LocalizedString("UserAccessLink"),"Index","Home")
         </div>
     </div>
     <div id="content">

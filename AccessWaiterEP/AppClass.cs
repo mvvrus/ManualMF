@@ -46,10 +46,13 @@ namespace AccessWaiterEP
             m_Factory = Factory;
             m_Key = Key;
             //Create and open database connection
-            m_Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["Default"].ConnectionString);
+            m_Conn = new SqlConnection((string)Factory.GetConfigurationItem(Global.CONN_STR));
             m_Conn.Open();
             //Create AccessWaiter object
-            m_AccessWaiter = new AccessWaiter(m_Conn);
+            m_AccessWaiter = new AccessWaiter(m_Conn
+                , (int)Factory.GetConfigurationItem(Global.MAXWAITTIME)
+                , (int)Factory.GetConfigurationItem(Global.FIRSTWAITTIME)
+            );
         }
 
         Task<bool> StartAsyncMethod(WaitTaskParams Params, CancellationToken Ct)

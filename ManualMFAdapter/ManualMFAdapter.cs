@@ -81,7 +81,7 @@ namespace ManualMF
                 {
 
                     //Check current permission state in database, 
-                    auth_state = validator.CheckAndRequest(upn, access_from, DateTime.Now.AddMinutes(15),out token); //TODO Change ValidUntil argement no to use a "magic" constant
+                    auth_state = validator.CheckAndRequest(upn, access_from, DateTime.Now.AddMinutes(Configuration.DecisionTimeMinutes),out token); 
                 }
                 conn.Close();
             }

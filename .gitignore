@@ -7,5 +7,4 @@
 Database/ManualMF.mdf
 Database/ManualMF_log.ldf
 Deploy/
-AccessLogicTest/*
-HTMLGenTest/*
+

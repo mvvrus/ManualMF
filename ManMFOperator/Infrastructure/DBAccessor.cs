@@ -16,7 +16,7 @@ namespace ManMFOperator.Infrastructure
 
         public DBAccessor()
         {
-            m_Connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["Default"].ConnectionString);
+            m_Connection = new SqlConnection(Configuration.ConnString);
             m_Controller = new AccessController(m_Connection);
         }
 

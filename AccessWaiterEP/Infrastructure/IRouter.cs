@@ -16,6 +16,7 @@ namespace AccessWaiterEP.Infrastructure
 
     public interface IAppInstanceFactory
     {
+        Object GetConfigurationItem(String ItemName);
         IAppInstance CreateNewInstance(out int Instance);
         void Release(IAppInstance AppInstance);
     }

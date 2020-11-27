@@ -3,7 +3,7 @@
 @model HomeIndexViewModel
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = Html.LocalizedString("UserAccessList");
 }
 <div class="pretable">
     @using (Html.BeginForm((String)ViewContext.RouteData.Values["action"], (String)ViewContext.RouteData.Values["controller"], FormMethod.Post, new { @class = "refresh" }))

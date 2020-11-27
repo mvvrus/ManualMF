@@ -30,3 +30,7 @@ actionClear = Clear request
 InputValidUntil = Allow/deny until
 Nextday = in next 24 hours
 #Submit = 
+
+#Layout data
+UserAccessLink = User access requests
+Header = Operator-assisted authentication

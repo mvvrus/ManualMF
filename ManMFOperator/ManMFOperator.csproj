@@ -208,6 +208,14 @@
   <PropertyGroup>
     <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /S  /Y $(TargetDir)*.* $(SolutionDir)Deploy\$(TargetName)\bin
+xcopy /S /Y $(ProjectDir)Views\*.* $(SolutionDir)Deploy\$(TargetName)\Views
+xcopy /S /Y $(ProjectDir)Content\*.* $(SolutionDir)Deploy\$(TargetName)\Content
+copy $(ProjectDir)web.config $(SolutionDir)Deploy\$(TargetName)\
+copy $(ProjectDir)global.asax $(SolutionDir)Deploy\$(TargetName)\
+copy $(SolutionDir)\PSScripts\*.ps1 $(SolutionDir)Deploy</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

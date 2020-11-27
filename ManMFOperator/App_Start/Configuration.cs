@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 
@@ -11,6 +12,7 @@ namespace ManMFOperator
     {
         static string s_DomainShortName; //Short name of the domain containing this server
         static string s_OperatorsGroup = "ManualMF_Operators";
+        static public string s_ConnString="Server=.\\SQLExpress;Integrated Security=true;Database=ManualMF";
 
         static Configuration()
         {
@@ -28,10 +30,16 @@ namespace ManMFOperator
             //
             DefaultAccessDuration = new TimeSpan(2, 0, 0);
         }
+
         public static void InitConfiguration() { 
-            //TODO Implement reading the configuration from web.config
+            //Implement reading the configuration from web.config
+            s_ConnString=WebConfigurationManager.ConnectionStrings["Default"]!=null ? WebConfigurationManager.ConnectionStrings["Default"].ConnectionString : s_ConnString;
+            s_OperatorsGroup = WebConfigurationManager.AppSettings["operators"] ?? s_OperatorsGroup;
+            s_DomainShortName = WebConfigurationManager.AppSettings["operatorsDomain"] ?? s_DomainShortName;
         }
+
         public static TimeSpan DefaultAccessDuration {get;private set;}
         public static String OperatorsGroup { get { return s_DomainShortName+"\\"+s_OperatorsGroup; } }
+        public static String ConnString { get { return s_ConnString; } }
     }
 }

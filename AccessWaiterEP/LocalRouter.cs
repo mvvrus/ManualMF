@@ -48,5 +48,10 @@ namespace AccessWaiterEP
                 ((AppClass)AppInstance).Dispose();
             }
         }
+
+        public object GetConfigurationItem(string ItemName)
+        {
+            return HttpContext.Current.Application[ItemName];
+        }
     }
 }

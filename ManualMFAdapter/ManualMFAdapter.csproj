@@ -35,6 +35,9 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>mvvrus.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.IdentityServer.Web">
       <HintPath>.\Microsoft.IdentityServer.Web.dll</HintPath>
@@ -64,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ManualMFAdapter.config" />
     <None Include="mvvrus.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +88,11 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /S /Y /EXCLUDE:$(TargetDir)exclude $(TargetDir)*.dll $(SolutionDir)\Deploy\$(TargetName)\
+copy  $(ProjectDir)ManualMFAdapter.config $(SolutionDir)\Deploy\$(TargetName)\
+copy $(SolutionDir)\PSScripts\*.ps1 $(SolutionDir)\Deploy</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
