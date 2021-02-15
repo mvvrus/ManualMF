@@ -22,7 +22,7 @@ html {
     background-color: #4488dd;
     float: left;
     min-height:92%;
-    min-width: 20%;
+    min-width: 15%;
     overflow:auto;
 }
 #content {
@@ -68,7 +68,7 @@ form.useraccess {
     min-width:540px;
 }
 input.numinput {
-    width: 4.5ch;
+    width: 2.25em;
 }
 input.submitbtn {
     margin-left:42%;

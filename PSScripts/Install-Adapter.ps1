@@ -24,6 +24,7 @@ Restart-Service adfssrv
 Set-AdfsGlobalAuthenticationPolicy -AdditionalAuthenticationProvider @('ManualMFAdapter')
 
 $garule = Get-AdfsAdditionalAuthenticationRule
+if ($garule -eq $null) { $garule = '' }
 if ($garule.IndexOf("http://schemas.microsoft.com/claims/multipleauthn") -lt 0) {
   $garule += 'c:[Type == "http://schemas.microsoft.com/ws/2012/01/insidecorporatenetwork", Value == "false"] => issue(Type = "http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationmethod", Value = "http://schemas.microsoft.com/claims/multipleauthn");'
   Set-AdfsAdditionalAuthenticationRule -AdditionalAuthenticationRules $garule

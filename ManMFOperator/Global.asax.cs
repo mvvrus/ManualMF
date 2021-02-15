@@ -9,7 +9,6 @@ using System.Web.Routing;
 using ManMFOperator.Controllers;
 using System.Resources;
 
-[assembly: NeutralResourcesLanguage("en")]
 namespace ManMFOperator
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 

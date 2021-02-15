@@ -34,6 +34,8 @@ namespace ManMFOperator.Infrastructure
                     info = new DirectoryUserInfo() { Upn = Upn, FullName = GetProp(result, "displayName"), Department = GetProp(result, "department") };
                     m_Cache.Add(Upn, info);
                 }
+                else
+                    info = new DirectoryUserInfo() { Upn = Upn, FullName = "???", Department = "???" };
             }
             return info ?? m_Cache[Upn];
         }

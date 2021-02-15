@@ -26,7 +26,7 @@ namespace ManualMF
         //Returns an input form part of the authetication page
         public string GetFormHtml(int lcid)
         {
-            HtmlFragmentSupplier supplier = HtmlFragmentSupplier.GetFragmentSupplier(lcid,m_Upn);
+            HtmlFragmentSupplier supplier = HtmlFragmentSupplier.GetFragmentSupplier(lcid);
             switch (m_FormMode)
             {
                 case FormMode.DeniedForm:
@@ -35,7 +35,7 @@ namespace ManualMF
                     return supplier.GetFragment(m_FormMode, m_ErrorMessage);
                 case FormMode.NormalForm:
                 case FormMode.WaitMoreForm:
-                    return supplier.GetFragment(m_FormMode,m_EPAccessToken);
+                    return supplier.GetFragment(m_FormMode, m_EPAccessToken, m_Upn);
                 default:
                     return supplier.GetFragment(m_FormMode);
             }

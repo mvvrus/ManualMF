@@ -11,4 +11,4 @@ Write-Host "Creating Web Application Proxy configuration script"
 . (Join-Path -Path $ScriptDir -ChildPath "Make-WAPConfigScript.ps1")
 $WAPScript = (Join-Path -Path $ScriptDir -ChildPath "Configure-ApiWapPublication.ps1").ToString() 
 Write-Host "Next step: copy the script file \"$WAPScript" to your Web Application Proxy server"
-Write-Host "           and run it as Asministrator"
+Write-Host "           and run it as Administrator"

@@ -18,7 +18,7 @@ namespace ManualMF
     {
         public static String CancelButtonName { get { return HtmlFragmentSupplier.CancelButtonName; } }
         public static String FinalCloseFragment(int Lcid) {
-            HtmlFragmentSupplier temp_supplier = HtmlFragmentSupplier.GetFragmentSupplier(Lcid,"");
+            HtmlFragmentSupplier temp_supplier = HtmlFragmentSupplier.GetFragmentSupplier(Lcid);
             return temp_supplier.GetFragment(FormMode.FinalCloseForm);
         }
     }
@@ -74,10 +74,12 @@ namespace ManualMF
         static ResourceManager s_LocalizedStrings;
         static NameValueCollection s_Fragments;
         const String CANCELBUTTON = "CancelButton";
+        static Object s_SuppliersLock;
 
         static NameValueCollection GetStringsForCulture(ResourceManager ResManager, CultureInfo culture)
         {
             ResourceSet resources;
+            s_SuppliersLock = new Object();
             try
             {
                 resources = ResManager.GetResourceSet(culture, true, true);
@@ -109,27 +111,35 @@ namespace ManualMF
         static internal String CancelButtonName { get { return s_Fragments[CANCELBUTTON]; } }
 
         NameValueCollection m_LocalizedStrings;
-        String m_Upn;
 
-        private HtmlFragmentSupplier(int lcid, string Upn)
+        private HtmlFragmentSupplier(int lcid)
         {
             m_LocalizedStrings = GetStringsForCulture(s_LocalizedStrings, new CultureInfo(lcid));
-            m_Upn = Upn;
         }
 
-        public static HtmlFragmentSupplier GetFragmentSupplier(int lcid, string Upn)
+        public static HtmlFragmentSupplier GetFragmentSupplier(int lcid)
         {
             HtmlFragmentSupplier result;
-            if (!s_suppliers.TryGetValue(lcid, out result)) {
-                //No instance for specified locale exists yet. Create it/
-                result = new HtmlFragmentSupplier(lcid,Upn);
-                s_suppliers.Add(lcid, result);
+            if (!s_suppliers.TryGetValue(lcid, out result))  //Preliminary check to avoid unnecessary locking
+            {
+                //No instance for specified locale may exists yet. Try to create it.
+                //Cannot use Lazy<T> due to a target framework version may be as low as 4.52(default on Win2012 R2)
+                //So invent our own bicycle
+                lock (s_SuppliersLock) //Put the lock to avoid possible race condition between different threads
+                {
+                    if (!s_suppliers.TryGetValue(lcid, out result)) //Must check ones more after locking because someone may create it
+                    {
+                        //No instance for specified locale really exists yet. Create it.
+                        result = new HtmlFragmentSupplier(lcid);
+                        s_suppliers.Add(lcid, result);
+                    }
+                }
             }
             return result;
         }
 
         //Create HTML fragment to return
-        String GetFragment(FormMode Mode, AccessDeniedReason Reason, String ErrorMessage, int? Token=null)
+        String GetFragment(FormMode Mode, AccessDeniedReason Reason, String ErrorMessage, int? Token=null, String Upn="")
         {
             String fragment_name = Enum.GetName(typeof(FormMode), Mode); //Get resource string name for the fragment template
             String html_template = s_Fragments[fragment_name]; //Extract fragment template from resources
@@ -145,7 +155,7 @@ namespace ManualMF
             if (deny_reason != null) vars.Add("DenyReason", deny_reason); //Add reason why the access is denied 
             if (ErrorMessage != null) vars.Add("ErrorMessage", ErrorMessage); //Add ErrorMessage if any
             if (Token != null) vars.Add("EPAccessToken", Token.Value.ToString());  //Add EndpointAccessToken token if any
-            vars.Add("Upn", m_Upn);
+            vars.Add("Upn", Upn);
             VarSubstitute.SubstituteVars(html_under_construction, "#", "#", vars); //Subtituprogram variables in the fragemnt, if any exists
             String result = html_under_construction.ToString();
             return result;
@@ -157,9 +167,9 @@ namespace ManualMF
             return GetFragment(Mode, AccessDeniedReason.UnknownOrNotDenied, null);
         }
 
-        public String GetFragment(FormMode Mode,int? Token)
+        public String GetFragment(FormMode Mode, int? Token, String Upn)
         {
-            return GetFragment(Mode, AccessDeniedReason.UnknownOrNotDenied, null,Token);
+            return GetFragment(Mode, AccessDeniedReason.UnknownOrNotDenied, null,Token, Upn);
         }
 
 

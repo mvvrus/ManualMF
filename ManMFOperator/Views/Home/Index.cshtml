@@ -8,11 +8,23 @@
 <div class="pretable">
     @using (Html.BeginForm((String)ViewContext.RouteData.Values["action"], (String)ViewContext.RouteData.Values["controller"], FormMethod.Post, new { @class = "refresh" }))
     {
-            @Html.EditorFor(x => x.withnonpending)
+            @Html.EditorFor(x => x.withnonpending,new {id="withnonpending"})
             @Html.LabelFor(x => x.withnonpending)
-            <input type="submit" name="Refresh" value="@Html.LocalizedString("Refresh")" />
+            <input type="submit" name="Refresh" id="Refresh" value="@Html.LocalizedString("Refresh")" />
     }
     <h3>@Html.LocalizedString("UserAccessList") (@Html.LocalizedString(Model.withnonpending?"SublistAll":"SublistPending"))</h3>
+    <script>
+        var showAllCheckbox, RefreshButton;
+        function onWindowLoad() {
+            showAllCheckbox = document.getElementById("withnonpending");
+            RefreshButton = document.getElementById("Refresh");
+            showAllCheckbox.onclick = changeShowAll;
+        }
+        function changeShowAll() {
+            RefreshButton.click();
+        }
+        window.addEventListener("load", onWindowLoad);
+    </script>
 </div>
 <div class="tableroot" >
 @{ if(Model.users.Count()>0) {

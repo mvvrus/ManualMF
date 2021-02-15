@@ -2,28 +2,30 @@
 CheckButtonText = Check
 #Text for the CancelButton 
 CancelButtonText = Cancel
+#NormalForm synopsys text
+NormalFormSynopsysText = Your access request was sent
+#WaitMoreForm synopsys text
+WaitMoreFormSynopsysText = Your access request is pending
 #Text in the description text field of the NormalForm 
 NormalFormDescriptionText = Call an operator and ask him/her to approve your access request.
 #Text in the description text field of the WaitMoreForm
 WaitMoreFormDescriptionText = Your request is waiting for an operator's decision.
 #Text for the NormalForm/WaitMoreForm describing the Check button
-CheckAboutText = Click "Check" to check approvement of your request.
+CheckAboutText = Turn on automatic checking or click "Check" to check manually was your request approved or rejected.
 #Text for the NormalForm/WaitMoreForm describing the Cancel button
 CancelAboutText = Click "Cancel" to terminate your request.
 
 #Text in the description text field of the AlreadyAuthForm
-AlreadyAuthFormDescriptionText = You access has been granted already
+AlreadyAuthFormDescriptionText = You access has been granted already by and operator.
 #Text describing the Continue button
-ContinueAboutText = Click "Continue" to proceed
+ContinueAboutText = Your browser will be redirected automatically to the page you have requested. If it does't happen for any reason, click "Continue" to proceed manually.
 #Text for ContinueButton 
 ContinueButtonText = Continue  
 
-#Text in the DeniedForm first paragraph
+#Text in the DeniedForm first paragraph (synopsys)
 DeniedFormStartText = Access denied.
 #Text in the DeniedForm third paragraph
 DeniedFormRepeatText = To make a new access request type an address of the resource you want to access into the address bar of your browser and pass your credentials check once again.
-#Text describing Continue button in DeniedForm
-ContinueToCloseAboutText = Click "Continue" to close this tab or entire browser window.
 
 ##Texts for deinial reasons in the DeniedForm (the second paragraph)
 #Denied by operator
@@ -38,8 +40,9 @@ RecordDisappeared = Cannot proceed with your access request because the request 
 InvalidToken = Request data inconsistency detected.
 
 #Text in the description text field of the ErrorForm
-ErrorFormDescriptionText = Error occured
-#Text describing Continue button in DeniedForm/FinalCloseForm
+ErrorFormSynopsysText = An error occured, cannot proceed.
+ErrorFormDescriptionText = The error message is:
+#Text describing Continue button in ErrorForm/FinalCloseForm
 CloseAboutText = Authentication request processing terminated. Enter any other site address in the address bar or close this tab or entire browser window.
 
 #Messages for online wait API
@@ -47,7 +50,7 @@ Checking = Checking
 Stopped = Stopped
 Answered = Answered
 CannotCheck = Checking impossible
-Terminated = Terminated
-PerformCheck = Perform online checking
+Terminated = Checking the answer
+PerformCheck = Perform automatic checking
 NotRunning = No check yet
-
+NoJS = To perform automatic checking JavaScript must be enabled 
