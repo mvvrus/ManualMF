@@ -11,7 +11,7 @@ NormalFormDescriptionText = Call an operator and ask him/her to approve your acc
 #Text in the description text field of the WaitMoreForm
 WaitMoreFormDescriptionText = Your request is waiting for an operator's decision.
 #Text for the NormalForm/WaitMoreForm describing the Check button
-CheckAboutText = Turn on automatic checking or click "Check" to check manually was your request approved or rejected.
+CheckAboutText = Turn on automatic checking or click "Check" to check manually whether your request is approved or rejected.
 #Text for the NormalForm/WaitMoreForm describing the Cancel button
 CancelAboutText = Click "Cancel" to terminate your request.
 

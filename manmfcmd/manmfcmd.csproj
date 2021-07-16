@@ -54,14 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="constrings.resx" />
-    <EmbeddedResource Include="constrings.ru.resx" />
+    <EmbeddedResource Include="constrings.restext" />
+    <EmbeddedResource Include="constrings.ru.restext" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Deploy\

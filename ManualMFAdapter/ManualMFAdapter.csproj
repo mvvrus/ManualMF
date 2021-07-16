@@ -69,25 +69,15 @@
   <ItemGroup>
     <None Include="ManualMFAdapter.config" />
     <None Include="mvvrus.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTMLFragments.resx" />
-    <EmbeddedResource Include="LocalizedStrings.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LocalizedStrings.ru.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLFragments.restext" />
+    <EmbeddedResource Include="LocalizedStrings.restext" />
+    <EmbeddedResource Include="LocalizedStrings.ru.restext" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="resources\HTMLFragments.txt" />
-    <Content Include="resources\LocalizedStrings.ru.txt" />
-    <Content Include="resources\LocalizedStrings.txt" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy /S /Y /EXCLUDE:$(TargetDir)exclude $(TargetDir)*.dll $(SolutionDir)\Deploy\$(TargetName)\

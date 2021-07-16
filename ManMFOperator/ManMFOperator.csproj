@@ -135,8 +135,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\Style.css" />
     <Content Include="Global.asax" />
-    <Content Include="resources\UserInfoRes.ru.txt" />
-    <Content Include="resources\UserInfoRes.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -164,11 +162,11 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UserInfoRes.resx" />
-    <EmbeddedResource Include="UserInfoRes.ru.resx" />
+    <Content Include="Views\Home\UserAccess.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\UserAccess.cshtml" />
+    <EmbeddedResource Include="UserInfoRes.restext" />
+    <EmbeddedResource Include="UserInfoRes.ru.restext" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -199,7 +197,8 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>call $(ProjectDir)rescompile.bat $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy /S  /Y $(TargetDir)*.* $(SolutionDir)Deploy\$(TargetName)\bin
