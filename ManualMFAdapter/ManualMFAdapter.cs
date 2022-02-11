@@ -123,12 +123,9 @@ namespace ManualMF
             int? token = null;
             switch (auth_state) {
                 case AuthState.AlreadyAuthenticated: //Authentication was successful already
-                    //But don't trust this blindly, because Context comes from the hidden input field in browser, perform the check again (and compare access token)
-                    /*
-                    //TODO At least, check that user cannot forge Context, better perform check again 
+                //Trust it, because Context comes from data encrypted the same way as AD FS tokens are
                     acc_state = AccessState.Allowed;
                     break; 
-                    */
                 case AuthState.ProcessingTerminated: //Safeguard agaist processing already terminated request
                 default: //Authentication was pending last time
                     //Get required infomation to check/cancel database record
