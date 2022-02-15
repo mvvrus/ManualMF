@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using ManMFOperator.Models;
@@ -9,11 +10,11 @@ namespace ManMFOperator.Infrastructure
 {
     public class ADCachedAccessor:IDirectoryAccessor
     {
-        Dictionary<String, DirectoryUserInfo> m_Cache;
+        ConcurrentDictionary<String, DirectoryUserInfo> m_Cache;
         DirectoryEntry m_GC;
         public ADCachedAccessor()
         {
-            m_Cache = new Dictionary<String, DirectoryUserInfo>();
+            m_Cache = new ConcurrentDictionary<String, DirectoryUserInfo>();
             m_GC = new DirectoryEntry("GC://"+Forest.GetCurrentForest().Name);
         }
 
@@ -32,7 +33,7 @@ namespace ManMFOperator.Infrastructure
                 if (result != null)
                 {
                     info = new DirectoryUserInfo() { Upn = Upn, FullName = GetProp(result, "displayName"), Department = GetProp(result, "department") };
-                    m_Cache.Add(Upn, info);
+                    m_Cache.GetOrAdd(Upn, info);
                 }
                 else
                     info = new DirectoryUserInfo() { Upn = Upn, FullName = "???", Department = "???" };
